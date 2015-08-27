@@ -1,0 +1,170 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Author: "Chris Ward" <cward@redhat.com>
+
+# PY3 COMPAT
+from __future__ import unicode_literals, absolute_import
+
+"""
+Git pre-commit hooks for stats-report.
+"""
+
+import argparse
+import logging
+import os
+import sys
+
+from members.utils import logr, run
+
+# Turn on DEBUG so we can get a full log on each commit
+logr.setLevel(logging.DEBUG)
+
+
+def run_tests():
+    '''
+    Run all the available tests.
+    '''
+    logr.warn(" RUNNING TESTS <<")
+    # Try to run make build
+    cmd = "py.test tests"
+    output, errors = run(cmd)
+    return 0
+
+
+def make_sdist():
+    '''
+    Make sure we haven't broken the rpm source builds
+    '''
+    logr.warn(" RUNNING SDIST <<")
+    # Try to build a python pip installable package
+    cmd = 'python setup.py sdist'
+    output, errors = run(cmd)
+    return 0
+
+
+def flake8():
+    '''
+    `get_git_param` will retrieve configuration from your local git config and
+    then fall back to using the environment variables that the hook has always
+    supported.
+
+    For example, to set the complexity, you'll need to do:
+        git config flake8.complexity 10
+    '''
+    logr.warn(" RUNNING FLAKE8 <<")
+    ecode = 0
+    try:
+        from flake8.hooks import git_hook, get_git_param
+    except ImportError:
+        logr.warn(' .. Skipping flake8. `pip install flake8` required.')
+        ecode = 1
+    else:
+        COMPLEXITY = get_git_param('FLAKE8_COMPLEXITY', 10)
+        STRICT = get_git_param('FLAKE8_STRICT', False)
+        IGNORE = get_git_param('FLAKE8_IGNORE', None)
+        LAZY = get_git_param('FLAKE8_LAZY', False)
+        ecode = git_hook(complexity=COMPLEXITY, strict=STRICT,
+                        ignore=IGNORE, lazy=LAZY)
+    return ecode
+
+
+def get_files():
+    '''
+    FIXME: DOCS...
+    Links:
+        * https://github.com/jaidevd/pyticks
+    '''
+
+    dirpath = os.getcwd()
+    files = []
+
+    ignored_dirs = ['.git', '_githooks', 'dist']
+
+    for dirname, dirnames, filenames in os.walk(dirpath):
+        if all(map(lambda d: not d in dirname, ignored_dirs)):
+            files.extend(map(lambda s: os.path.join(dirname, s), filenames))
+
+    ignored_extensions = ['pyc']
+
+    files = [f for f in files if all(map(lambda ex: not f.endswith(ex), 
+                                                        ignored_extensions))]
+    return files
+
+
+def _find_fixme(files):
+    '''Find all comments marked FIXME in the files.
+    :param files: list of pathes to files which are to be parsed for FIXMEs
+    :return: List of FIXME comments
+    '''
+    fixmes = []
+    for filepath in files:
+        with open(filepath, 'r') as f:
+            lines = [line.rstrip() for line in f.readlines()]
+        anchors = []
+        for i in xrange(len(lines)):
+            line = lines[i]
+            if 'FIXME:' in line.lstrip():
+                anchors.append(i)
+        for anchor in anchors:
+            title = lines[anchor].split('FIXME:', 1)[1].lstrip()
+            ix = anchor
+            body = []
+            while True:
+                ix += 1
+                try:
+                    if not lines[ix].lstrip().startswith('#'):
+                        break
+                    else:
+                        body.append(lines[ix].lstrip())
+                except IndexError:  # end of file
+                    break
+            if len(body) > 0:
+                body = ''.join([ln.replace('#', '').lstrip() for ln in body])
+            else:
+                body = title
+            # FIXME change with repo root directory
+            fpath = filepath.split('members/', 1)[1]
+            fixmes.append(dict(file=fpath, line=anchor, title=title, body=body))
+    return fixmes
+
+def main():
+    """ Main function handling configuration files etc """
+    parser = argparse.ArgumentParser(
+        description='Git python commit hooks')
+    parser.add_argument(
+        '--make-rpm', action='store_const', const=True, default=True,
+        help='Build RPMs from source')
+    parser.add_argument(
+        '--run-tests', action='store_const', const=True, default=True,
+        help='Run all available tests')
+    parser.add_argument(
+        '--stash-first', action='store_const', const=True, default=False,
+        help='Run all available tests')
+    args = parser.parse_args()
+
+    # make sure we're working with only the staged content!
+    files = get_files()
+    fixmes = _find_fixme(files)
+    for fixme in fixmes:
+        logr.info(" File {},  line {}, FIXME : {}".format(fixme['file'], fixme['line'], fixme['body']))
+
+    if args.stash_first:
+        run('git stash -q --keep-index')
+
+    try:
+        results = []
+        if args.run_tests:
+            results.append({'run_tests': run_tests()})
+    finally:
+        # make sure we return things back to how they started
+        if args.stash_first:
+            run('git stash pop -q')
+    
+    print results
+    ecode = 0 if all(results) else 1
+
+    logr.debug(' EXIT: {} <<'.format(ecode))
+    sys.exit(ecode)
+
+if __name__ == '__main__':
+    main()

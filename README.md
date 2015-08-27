@@ -50,5 +50,5 @@ DEVELOPMENT
 ===========
 Install the supplied githooks; eg, ::
 
-    ln -s ~/repos/members/_githooks/commit-msg ~/repos/members/.git/hooks/commit-msg
-    ln -s ~/repos/members/_githooks/pre-commit ~/repos/members/.git/hooks/pre-commit
+    ln -s ~/repos/df2gspread/_githooks/commit-msg ~/repos/df2gspread/.git/hooks/commit-msg
+    ln -s ~/repos/df2gspread/_githooks/pre-commit ~/repos/df2gspread/.git/hooks/pre-commit
