@@ -28,7 +28,7 @@ try:
 except ImportError:
     flags = None
 
-# FIXME clarify scopes
+# FIXME: clarify scopes
 SCOPES = ('https://www.googleapis.com/auth/drive.metadata.readonly '
             'https://www.googleapis.com/auth/drive '
             'https://spreadsheets.google.com/feeds '
@@ -71,7 +71,7 @@ def export(df, path="/New Spreadsheet", wks_name="Sheet1"):
     http = credentials.authorize(httplib2.Http())
     # auth for gspread
     gc = gspread.authorize(credentials)
-    # FIXME Different versions have different keys like v1:id, v2:fileId
+    # FIXME: Different versions have different keys like v1:id, v2:fileId
     service = discovery.build('drive', 'v2', http=http)
 
     about = service.about().get().execute()
@@ -152,7 +152,8 @@ def export(df, path="/New Spreadsheet", wks_name="Sheet1"):
     if len(df.columns)+1 > wks.col_count:
         wks.add_cols(len(df.columns)-wks.col_count+1)
 
-    # FIXME NaN value in gspreadsheets
+    # FIXME: NaN value in gspreadsheets
+
     # Addition of col names
     cell_list = wks.range('B1:%s1'%(last_col, ))
     for idx, cell in enumerate(cell_list):

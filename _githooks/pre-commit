@@ -127,7 +127,7 @@ def _find_fixme(files):
                     break
             body = ''.join([ln.replace('#', '').lstrip() for ln in body])
             # FIXME change with repo root directory
-            fpath = filepath.split('members/', 1)[1]
+            fpath = filepath.split('df2gspread/', 1)[1]
             fixmes.append(dict(file=fpath, line=anchor_pos, body=body))
     return fixmes
 
