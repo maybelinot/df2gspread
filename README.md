@@ -19,7 +19,7 @@ Example install, using VirtualEnv::
 
 ACCESS CREDENTIALS
 ==================
-##### To allow a script to use Google Drive API we need to authenticate our self towards Google. To do so, we need to create a project, describing the tool and generate credentials. Please use your web browser and go to Google console: https://console.developers.google.com .
+##### To allow a script to use Google Drive API we need to authenticate our self towards Google. To do so, we need to create a project, describing the tool and generate credentials. Please use your web browser and go to [Google console](https://console.developers.google.com).
 * Click on the button **"Create Project"**.
 * A dialog box appears, so give your project a name and an ID and click on **"Create"** buton.
 * In section **"Boost your app with a Google API"** click on **"Enable an API"** button.
