@@ -107,6 +107,7 @@ def export(df, path="/New Spreadsheet", wks_name="Sheet1"):
             file_id = service.files().insert(body=body).execute(http=http)['id']
 
     # connection to created spreadsheet via gspread
+    tmp_wks = None
     try:
         spsh = gc.open_by_key(file_id)
         wkss = spsh.worksheets()
