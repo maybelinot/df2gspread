@@ -15,7 +15,7 @@ import os
 import re
 import sys
 
-from members.utils import logr, run
+from df2gspread.utils import logr, run
 
 # Turn on DEBUG so we can get a full log on each commit
 logr.setLevel(logging.DEBUG)
@@ -87,11 +87,11 @@ def _get_files():
             files.extend(map(lambda s: os.path.join(dirname, s), filenames))
 
     ignored_rear_extensions = ['pyc']
-    files = [f for f in files if all(map(lambda ex: not f.endswith(ex), 
+    files = [f for f in files if all(map(lambda ex: not f.endswith(ex),
                                                         ignored_rear_extensions))]
 
     ignored_front_extensions = ['.']
-    files = [f for f in files if all(map(lambda ex: not f.startswith(ex), 
+    files = [f for f in files if all(map(lambda ex: not f.startswith(ex),
                                                         ignored_front_extensions))]
 
     return files
@@ -131,6 +131,7 @@ def _find_fixme(files):
             fixmes.append(dict(file=fpath, line=anchor_pos, body=body))
     return fixmes
 
+
 def main():
     """ Main function handling configuration files etc """
     parser = argparse.ArgumentParser(
@@ -150,23 +151,22 @@ def main():
     if args.stash_first:
         run('git stash -q --keep-index')
 
-    try:
-        results = []
-        if args.run_tests:
-            results.append({'run_tests': run_tests()})
-    finally:
-        # make sure we return things back to how they started
-        if args.stash_first:
-            run('git stash pop -q')
+    results = []
+    #if args.run_tests:
+    #    results.append({'run_tests': run_tests()})
 
-    logr.info(' RUNNING FIXMES  <<')
-    files = _get_files()
-    fixmes = _find_fixme(files)
-    for fixme in fixmes:
-        logr.info(" File {},  line {}, FIXME : {}".format(fixme['file'], 
-                                                            fixme['line'], 
-                                                            fixme['body']))
-    
+    #logr.info(' RUNNING FIXMES  <<')
+    #files = _get_files()
+    #fixmes = _find_fixme(files)
+    #for fixme in fixmes:
+    #    logr.info(" File {},  line {}, FIXME : {}".format(fixme['file'],
+    #                                                        fixme['line'],
+    #                                                        fixme['body']))
+    # make sure we return things back to how they started
+    if args.stash_first:
+        run('git stash pop -q')
+
+
     ecode = 0 if all(results) else 1
 
     logr.debug(' EXIT: {}  <<'.format(ecode))

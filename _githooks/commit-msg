@@ -19,7 +19,7 @@ from __future__ import unicode_literals, absolute_import
 import logging
 import sys
 
-from members.utils import logr
+from df2gspread.utils import logr
 
 # Turn on DEBUG so we can get a full log on each commit
 logr.setLevel(logging.DEBUG)
