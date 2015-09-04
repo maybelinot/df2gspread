@@ -56,11 +56,16 @@ and generate credentials. Please use your web browser and go to
       credentials, so take care of the file in the same way you care of your 
       private SSH key; i.e. move downloaded JSON file to **~/.df2gspread**. 
 
+    * Then, the first time you run it your browswer window will open
+      a google authorization request page. Approve authorization and
+      then the credentials will work as expected.
+
+
 USAGE
 =====
 Run df2gspread like::
 
-    import df2gspread
+    from df2gspread import df2gspread
     import pandas as pd
     d = [pd.Series([1., 2., 3.], index=['a', 'b', 'c']),
         pd.Series([1., 2., 3., 4.], index=['a', 'b', 'c', 'd'])]

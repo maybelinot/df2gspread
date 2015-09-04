@@ -3,7 +3,7 @@
 
 # python-2.7 setup.py build
 
-from __future__ import absolute_import  # , unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 from setuptools import setup
 
@@ -21,6 +21,7 @@ __pkgs__ = ['df2gspread', ]
 __desc__ = 'Export tables to Google Spreadsheets.'
 __irequires__ = [
     # CORE DEPENDENCIES
+    'argparse==1.3.0',
     'google-api-python-client==1.4.1',
     'gspread==0.2.5',
     'oauth2client>=1.4.12',
@@ -41,7 +42,7 @@ pip_src = 'https://pypi.python.org/packages/src'
 __deplinks__ = []
 
 # README is in the parent directory
-readme_pth = 'README.md'
+readme_pth = 'README.rst'
 with open(readme_pth) as _file:
     readme = _file.read()
 
