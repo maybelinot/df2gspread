@@ -63,6 +63,15 @@ Run df2gspread like::
     wks_name = 'New Sheet'
     df2gspread.export(df, path, wks_name)
 
+Run gspread2df like::
+
+    from df2gspread import gspread2df
+    
+    path = '/some/folder/New Spreadsheet'
+    wks_name = 'New Sheet'
+    
+    df = gspread2df.export(path, wks_name, col_names = True, row_names = True)
+
 DEVELOPMENT
 ===========
 Install the supplied githooks; eg::
