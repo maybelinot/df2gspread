@@ -18,55 +18,19 @@ from apiclient import discovery
 import gspread
 import oauth2client
 
-from utils import CLIENT_SECRET_FILE, logr
+from utils import CLIENT_SECRET_FILE, logr, get_credentials
 
 try:
     input = raw_input
 except NameError:  # Python 3
     pass
 
-try:
-    import argparse
-    flags = argparse.ArgumentParser(
-        parents=[oauth2client.tools.argparser]).parse_args()
-except ImportError:
-    logr.error(
-        'Unable to parse oauth2client args; `pip install argparse` required')
-    flags = None
 
 # FIXME: clarify scopes
 SCOPES = ('https://www.googleapis.com/auth/drive.metadata.readonly '
           'https://www.googleapis.com/auth/drive '
           'https://spreadsheets.google.com/feeds '
           'https://docs.google.com/feeds')
-
-
-def get_credentials():
-    """
-    FIXME DOCs
-    Taken from:
-    https://developers.google.com/drive/web/quickstart/python
-    """
-    home_dir = os.path.expanduser('~')
-    credential_dir = os.path.join(home_dir, '.credentials')
-    if not os.path.exists(credential_dir):
-        os.makedirs(credential_dir)
-    credential_path = os.path.join(credential_dir,
-                                   'drive.json')
-
-    store = oauth2client.file.Storage(credential_path)
-    credentials = store.get()
-    if not credentials or credentials.invalid:
-
-        flow = oauth2client.client.flow_from_clientsecrets(
-            CLIENT_SECRET_FILE, SCOPES)
-        flow.redirect_uri = oauth2client.client.OOB_CALLBACK_URN
-        if flags:
-            credentials = oauth2client.tools.run_flow(flow, store, flags)
-        else:  # Needed only for compatability with Python 2.6
-            credentials = oauth2client.tools.run(flow, store)
-        logr.info('Storing credentials to ' + credential_path)
-    return credentials
 
 
 def export(df, path="/New Spreadsheet", wks_name="Sheet1"):

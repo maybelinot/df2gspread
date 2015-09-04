@@ -16,8 +16,9 @@ if not __version__:
 
 # acceptable version schema: major.minor[.patch][-sub[ab]]
 __pkg__ = 'df2gspread'
-__pkgdir__ = {'df2gspread': 'df2gspread'}
-__pkgs__ = ['df2gspread', ]
+__pkgdir__ = {'df2gspread': 'df2gspread',
+                'gspread2df': 'df2gspread'}
+__pkgs__ = ['df2gspread']
 __desc__ = 'Export tables to Google Spreadsheets.'
 __irequires__ = [
     # CORE DEPENDENCIES
