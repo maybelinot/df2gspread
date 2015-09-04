@@ -22,7 +22,7 @@ ACCESS CREDENTIALS
 To allow a script to use Google Drive API we need to authenticate our self 
 towards Google.  To do so, we need to create a project, describing the tool 
 and generate credentials. Please use your web browser and go to 
-`Google console <https://console.developers.google.com>`_ and ::
+`Google console <https://console.developers.google.com>`_ and :
 
     * Click on the button **"Create Project"**.
 
