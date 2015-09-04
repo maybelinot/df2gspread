@@ -24,41 +24,29 @@ towards Google.  To do so, we need to create a project, describing the tool
 and generate credentials. Please use your web browser and go to 
 `Google console <https://console.developers.google.com>`_ and :
 
-    * Click on the button **"Create Project"**.
+* Click on the button **"Create Project"**.
 
-    * A dialog box appears, so give your project a name and an ID and click 
-      on **"Create"** buton.
+* A dialog box appears, so give your project a name and an ID and click on **"Create"** button.
 
-    * In section **"Boost your app with a Google API"** click on **"Enable 
-      an API"** button.
+* In section **"Boost your app with a Google API"** click on **"Enable an API"** button.
 
-    * A table of available APIs is shown. Switch **"Drive API"** to **"ON"** 
-      state. Other APIs might be switched off, for our purpose.
+* A table of available APIs is shown. Switch **"Drive API"** to **"ON"** state. Other APIs might be switched off, for our purpose.
 
-    * On the left-side menu click on **"APIS & auth"** -> **"Credentials"**.
+* On the left-side menu click on **"APIS & auth"** -> **"Credentials"**.
 
-    * In section **"OAuth"** click on **"Create new client ID"** button
+* In section **"OAuth"** click on **"Create new client ID"** button
       
-    * A dialog box appears. Select **"Installed application"** item and 
-      click on **"Configure consent screen"**.
+* A dialog box appears. Select **"Installed application"** item and click on **"Configure consent screen"**.
 
-    * From drop-down box select your email address and give your product a 
-      name. Then click on **"Save"** button.
+* From drop-down box select your email address and give your product a name. Then click on **"Save"** button.
 
-    * A dialog box  **"Create Cliend ID"** appears. Select **"Installed 
-      application"** item as "APPLICATION TYPE" and **"Other"** item as 
-      "INSTALLED APPLICATION TYPE".
+* A dialog box  **"Create Cliend ID"** appears. Select **"Installed application"** item as "APPLICATION TYPE" and **"Other"** item as "INSTALLED APPLICATION TYPE".
 
-    * Click on **"Create Client ID"** button.
+* Click on **"Create Client ID"** button.
 
-    * Click on **"Download JSON"** button and store the downloaded file on 
-      your file system. Please be aware, the file contains your private 
-      credentials, so take care of the file in the same way you care of your 
-      private SSH key; i.e. move downloaded JSON file to **~/.df2gspread**. 
+* Click on **"Download JSON"** button and store the downloaded file on your file system. Please be aware, the file contains your private credentials, so take care of the file in the same way you care of your private SSH key; i.e. move downloaded JSON file to **~/.df2gspread**. 
 
-    * Then, the first time you run it your browswer window will open
-      a google authorization request page. Approve authorization and
-      then the credentials will work as expected.
+* Then, the first time you run it your browswer window will opena google authorization request page. Approve authorization and then the credentials will work as expected.
 
 
 USAGE
