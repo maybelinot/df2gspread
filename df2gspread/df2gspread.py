@@ -1,5 +1,11 @@
-#!/usr/bin/python
-# Author: "Eduard Trott" <etrott@redhat.com>
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# @Author: Eduard Trott
+# @Date:   2015-09-04 13:14:09
+# @Email:  etrott@redhat.com
+# @Last modified by:   etrott
+# @Last Modified time: 2015-09-08 11:54:51
+
 
 # SHORT SUMMARY of alternative google spreadsheet python modules:
 # - gspread do not allow creation of new sreadsheets

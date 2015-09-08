@@ -1,5 +1,11 @@
 #!/usr/bin/env python
-# Author: "Eduard Trott" <etrott@redhat.com>
+# -*- coding: utf-8 -*-
+# @Author: Eduard Trott
+# @Date:   2015-09-04 14:04:46
+# @Email:  etrott@redhat.com
+# @Last modified by:   etrott
+# @Last Modified time: 2015-09-08 11:55:43
+
 
 # python-2.7 setup.py build
 
@@ -17,7 +23,7 @@ if not __version__:
 # acceptable version schema: major.minor[.patch][-sub[ab]]
 __pkg__ = 'df2gspread'
 __pkgdir__ = {'df2gspread': 'df2gspread',
-                'gspread2df': 'df2gspread'}
+              'gspread2df': 'df2gspread'}
 __pkgs__ = ['df2gspread']
 __desc__ = 'Export tables to Google Spreadsheets.'
 __irequires__ = [

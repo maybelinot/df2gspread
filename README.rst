@@ -44,7 +44,7 @@ and generate credentials. Please use your web browser and go to
 
 * Click on **"Create Client ID"** button.
 
-* Click on **"Download JSON"** button and store the downloaded file on your file system. Please be aware, the file contains your private credentials, so take care of the file in the same way you care of your private SSH key; i.e. move downloaded JSON file to **~/.df2gspread**. 
+* Click on **"Download JSON"** button and store the downloaded file on your file system. Please be aware, the file contains your private credentials, so take care of the file in the same way you care of your private SSH key; i.e. move downloaded JSON file to **~/.gdrive_private**. 
 
 * Then, the first time you run it your browswer window will opena google authorization request page. Approve authorization and then the credentials will work as expected.
 

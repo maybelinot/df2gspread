@@ -1,5 +1,10 @@
-#!/usr/bin/python
-# Author: "Eduard Trott" <etrott@redhat.com>
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# @Author: Eduard Trott
+# @Date:   2015-09-08 09:59:24
+# @Email:  etrott@redhat.com
+# @Last modified by:   etrott
+# @Last Modified time: 2015-09-08 09:59:43
 
 # SHORT SUMMARY of alternative google spreadsheet python modules:
 # - gspread do not allow creation of new sreadsheets
@@ -30,8 +35,8 @@ SCOPES = ('https://www.googleapis.com/auth/drive.metadata.readonly '
           'https://docs.google.com/feeds')
 
 
-def export(path="/New Spreadsheet", wks_name="Sheet1", col_names = False, 
-                                                        row_names = False):
+def export(path="/New Spreadsheet", wks_name="Sheet1", col_names=False,
+           row_names=False):
     '''
     FIXME DOCs
     '''
@@ -89,7 +94,7 @@ def export(path="/New Spreadsheet", wks_name="Sheet1", col_names = False,
     raw_data = wks.get_all_values()
 
     if not raw_data:
-        sys.exit()    
+        sys.exit()
 
     if row_names and col_names:
         row_names = [row[0] for row in raw_data[1:]]
@@ -97,10 +102,10 @@ def export(path="/New Spreadsheet", wks_name="Sheet1", col_names = False,
         raw_data = [row[1:] for row in raw_data[1:]]
     elif row_names:
         row_names = [row[0] for row in raw_data]
-        col_names = np.arange(len(raw_data[0])-1)
+        col_names = np.arange(len(raw_data[0]) - 1)
         raw_data = [row[1:] for row in raw_data]
     elif col_names:
-        row_names = np.arange(len(raw_data)-1)
+        row_names = np.arange(len(raw_data) - 1)
         col_names = raw_data[0]
         raw_data = raw_data[1:]
     else:
@@ -119,8 +124,8 @@ if __name__ == "__main__":
     # Basic test
     import gspread2df
 
-    path = '/some/folder/New Spreadsheet'
-    wks_name = 'Sheet1'
+    path = '/some/Platform QE All-Hands Event Survey (Responses)'
+    wks_name = 'Form Responses 1'
 
-    df = gspread2df.export(path, wks_name, col_names = True, row_names = True)
+    df = gspread2df.export(path, wks_name, col_names=True)
     print(df)
