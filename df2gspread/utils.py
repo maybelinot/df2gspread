@@ -4,7 +4,7 @@
 # @Date:   2015-09-07 15:17:56
 # @Email:  etrott@redhat.com
 # @Last modified by:   etrott
-# @Last Modified time: 2015-09-08 11:55:10
+# @Last Modified time: 2015-09-09 13:56:50
 
 
 # PY3 COMPAT
@@ -52,11 +52,12 @@ def get_credentials():
     try:
         import argparse
         flags = argparse.ArgumentParser(
-            parents=[oauth2client.tools.argparser]).parse_args()
+            parents=[oauth2client.tools.argparser]).parse_known_args()[0]
     except ImportError:
+        flags = None
         logr.error(
             'Unable to parse oauth2client args; `pip install argparse` required')
-        flags = None
+
     home_dir = os.path.expanduser('~')
     credential_dir = os.path.join(home_dir, '.credentials')
     if not os.path.exists(credential_dir):
