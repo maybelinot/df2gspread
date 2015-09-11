@@ -65,7 +65,7 @@ def flake8():
         IGNORE = get_git_param('FLAKE8_IGNORE', None)
         LAZY = get_git_param('FLAKE8_LAZY', False)
         ecode = git_hook(complexity=COMPLEXITY, strict=STRICT,
-                        ignore=IGNORE, lazy=LAZY)
+                         ignore=IGNORE, lazy=LAZY)
     return ecode
 
 
@@ -80,7 +80,8 @@ def _get_files():
     files = []
 
     ignored_dirs = [r'\/\.', r'\/\_githooks', r'\/dist']
-    ignored_patterns = [re.compile('.*'+pattern+'.*') for pattern in ignored_dirs]
+    ignored_patterns = [
+        re.compile('.*' + pattern + '.*') for pattern in ignored_dirs]
 
     for dirname, dirnames, filenames in os.walk(dirpath):
         if all(map(lambda pattern: not pattern.match(dirname), ignored_patterns)):
@@ -88,11 +89,11 @@ def _get_files():
 
     ignored_rear_extensions = ['pyc']
     files = [f for f in files if all(map(lambda ex: not f.endswith(ex),
-                                                        ignored_rear_extensions))]
+                                         ignored_rear_extensions))]
 
     ignored_front_extensions = ['.']
     files = [f for f in files if all(map(lambda ex: not f.startswith(ex),
-                                                        ignored_front_extensions))]
+                                         ignored_front_extensions))]
 
     return files
 
@@ -113,7 +114,7 @@ def _find_fixme(files):
             for anchor in anchors:
                 if anchor in line.lstrip():
                     anchors_info.append((anchor, idx))
-        for anchor, anchor_pos  in anchors_info:
+        for anchor, anchor_pos in anchors_info:
             body = [lines[anchor_pos].split(anchor, 1)[1].lstrip()]
             ix = anchor_pos
             while True:
@@ -152,20 +153,19 @@ def main():
         run('git stash -q --keep-index')
 
     results = []
-    #if args.run_tests:
+    # if args.run_tests:
     #    results.append({'run_tests': run_tests()})
 
     #logr.info(' RUNNING FIXMES  <<')
     #files = _get_files()
     #fixmes = _find_fixme(files)
-    #for fixme in fixmes:
+    # for fixme in fixmes:
     #    logr.info(" File {},  line {}, FIXME : {}".format(fixme['file'],
     #                                                        fixme['line'],
     #                                                        fixme['body']))
     # make sure we return things back to how they started
     if args.stash_first:
         run('git stash pop -q')
-
 
     ecode = 0 if all(results) else 1
 

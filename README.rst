@@ -44,9 +44,9 @@ and generate credentials. Please use your web browser and go to
 
 * Click on **"Create Client ID"** button.
 
-* Click on **"Download JSON"** button and store the downloaded file on your file system. Please be aware, the file contains your private credentials, so take care of the file in the same way you care of your private SSH key; i.e. move downloaded JSON file to **~/.df2gspread**. 
+* Click on **"Download JSON"** button and store the downloaded file on your file system. Please be aware, the file contains your private credentials, so take care of the file in the same way you care of your private SSH key; i.e. move downloaded JSON file to **~/.gdrive_private**. 
 
-* Then, the first time you run it your browswer window will opena google authorization request page. Approve authorization and then the credentials will work as expected.
+* Then, the first time you run it your browswer window will open a google authorization request page. Approve authorization and then the credentials will work as expected.
 
 
 USAGE
@@ -62,6 +62,15 @@ Run df2gspread like::
     path = '/some/folder/New Spreadsheet'
     wks_name = 'New Sheet'
     df2gspread.export(df, path, wks_name)
+
+Run gspread2df like::
+
+    from df2gspread import gspread2df
+    
+    path = '/some/folder/New Spreadsheet'
+    wks_name = 'New Sheet'
+    
+    df = gspread2df.export(path, wks_name, col_names = True, row_names = True)
 
 DEVELOPMENT
 ===========
