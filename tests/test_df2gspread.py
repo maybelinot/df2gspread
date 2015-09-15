@@ -4,11 +4,10 @@
 # @Date:   2015-09-08 16:29:32
 # @Email:  etrott@redhat.com
 # @Last modified by:   etrott
-# @Last Modified time: 2015-09-15 09:28:06
+# @Last Modified time: 2015-09-15 09:29:57
 
 from __future__ import unicode_literals, absolute_import
 
-from instructions import commands, datatypes
 import pytest
 
 
