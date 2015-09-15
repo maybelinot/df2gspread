@@ -1,6 +1,10 @@
 .. image:: https://travis-ci.org/maybelinot/df2gspread.png
    :target: https://travis-ci.org/maybelinot/df2gspread
 
+.. image:: https://coveralls.io/repos/maybelinot/df2gspread/badge.svg
+  :target: https://coveralls.io/r/maybelinot/df2gspread
+
+
 INSTALLATION
 ============
 Example install, using VirtualEnv::
