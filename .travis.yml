@@ -1,0 +1,19 @@
+cache:
+  directories:
+    - $HOME/.pip-cache/
+language: python
+python:
+  - "2.7"
+    #  - "3.3"  # ## SEE BELOW FOR EXPLANATION
+    #  - "3.4"  # ## SEE BELOW FOR EXPLANATION
+install:
+  - "pip install -U pip setuptools virtualenv"
+  - "pip install coveralls"
+  - "git clone https://github.com/kejbaly2/travis_wheels.git /home/travis/travis_wheels"
+  - "ls ~/travis_wheels/wheelhouse"
+  - "pip install -e .[tests,docs,github,invoke] --find-links=file:///home/travis/travis_wheels/wheelhouse --trusted-host None"
+
+script: 
+  - "coverage run --source=members -m py.test tests"
+after_success:
+  - coveralls
