@@ -1,3 +1,6 @@
+.. image:: https://travis-ci.org/maybelinot/df2gspread.png
+   :target: https://travis-ci.org/maybelinot/df2gspread
+
 INSTALLATION
 ============
 Example install, using VirtualEnv::
