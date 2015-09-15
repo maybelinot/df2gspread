@@ -4,14 +4,7 @@
 # @Date:   2015-09-04 13:14:09
 # @Email:  etrott@redhat.com
 # @Last modified by:   etrott
-# @Last Modified time: 2015-09-08 11:54:51
-
-
-# SHORT SUMMARY of alternative google spreadsheet python modules:
-# - gspread do not allow creation of new sreadsheets
-# - gdata allow it, but do not support authorization with credentials
-#   and have terrible documentation
-# - apiclient allow both, but gspread more comfortable for spreadsheet editing
+# @Last Modified time: 2015-09-15 10:06:16
 
 from distutils.util import strtobool
 import httplib2

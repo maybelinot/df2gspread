@@ -4,13 +4,7 @@
 # @Date:   2015-09-08 09:59:24
 # @Email:  etrott@redhat.com
 # @Last modified by:   etrott
-# @Last Modified time: 2015-09-08 09:59:43
-
-# SHORT SUMMARY of alternative google spreadsheet python modules:
-# - gspread do not allow creation of new sreadsheets
-# - gdata allow it, but do not support authorization with credentials
-#   and have terrible documentation
-# - apiclient allow both, but gspread more comfortable for spreadsheet editing
+# @Last Modified time: 2015-09-15 10:27:35
 
 from distutils.util import strtobool
 import httplib2
@@ -35,54 +29,61 @@ SCOPES = ('https://www.googleapis.com/auth/drive.metadata.readonly '
           'https://docs.google.com/feeds')
 
 
-def export(path="/New Spreadsheet", wks_name="Sheet1", col_names=False,
+def export(gfile="/New Spreadsheet", wks_name=None, col_names=False,
            row_names=False):
     '''
     FIXME DOCs
     '''
     # access credentials
     credentials = get_credentials()
-    # auth for apiclient
-    http = credentials.authorize(httplib2.Http())
     # auth for gspread
     gc = gspread.authorize(credentials)
-    # FIXME: Different versions have different keys like v1:id, v2:fileId
-    service = discovery.build('drive', 'v2', http=http)
+    try:
+        spsh = gc.open_by_key(gfile)
+    except:
+        # auth for apiclient
+        http = credentials.authorize(httplib2.Http())
+        # FIXME: Different versions have different keys like v1:id, v2:fileId
+        service = discovery.build('drive', 'v2', http=http)
 
-    about = service.about().get().execute()
+        about = service.about().get().execute()
 
-    file_id = about['rootFolderId']
+        file_id = about['rootFolderId']
 
-    pathway = path.split('/')
+        pathway = gfile.split('/')
 
-    # folder/folder/folder/spreadsheet
-    for name in pathway:
-        if name == '':
-            continue
-        file_exists = False
-        # searching for all files in gdrive with given name
-        files = service.files().list(
-            q="title = '%s'" % (name,)).execute()['items']
-        for f in files:
-            # if file not trashed and previos file(or root for first
-            # file) in parents then remember file id
-            if not f['labels']['trashed'] and \
-                    any([file_id in parent['id'] for parent in f['parents']]):
-                file_id = f['id']
-                file_exists = True
-                break
-        #  else error
-        if not file_exists:
-            sys.exit("Spreadsheet '%s' is not exist" % (path))
+        # folder/folder/folder/spreadsheet
+        for name in pathway:
+            if name == '':
+                continue
+            file_exists = False
+            # searching for all files in gdrive with given name
+            files = service.files().list(
+                q="title = '%s'" % (name,)).execute()['items']
+            for f in files:
+                # if file not trashed and previos file(or root for first
+                # file) in parents then remember file id
+                if not f['labels']['trashed'] and \
+                        any([file_id in parent['id'] for parent in f['parents']]):
+                    file_id = f['id']
+                    file_exists = True
+                    break
+            #  else error
+            if not file_exists:
+                sys.exit("Spreadsheet '%s' is not exist" % (gfile))
+        gfile = file_id
 
-    wsheet_match = lambda wks: re.match(
-        r"<Worksheet '%s' id:\S+>" % (wks_name), str(wks))
+    if wks_name is not None:
+        wsheet_match = lambda wks: re.match(
+            r"<Worksheet '%s' id:\S+>" % (wks_name), str(wks))
     # connection to created spreadsheet via gspread
     tmp_wks = None
     try:
-        spsh = gc.open_by_key(file_id)
+        spsh = gc.open_by_key(gfile)
         wkss = spsh.worksheets()
-        if any(map(wsheet_match, wkss)):
+        if wks_name is None:
+            wks = spsh.sheet1
+        elif any(map(wsheet_match, wkss)):
             wks = spsh.worksheet(wks_name)
         else:
             sys.exit("Worksheet '%s' is not exist" % (wks_name))
@@ -124,8 +125,8 @@ if __name__ == "__main__":
     # Basic test
     import gspread2df
 
-    path = '/some/Platform QE All-Hands Event Survey (Responses)'
-    wks_name = 'Form Responses 1'
+    path = '/some/file'
+    wks_name = 'Worksheet'
 
     df = gspread2df.export(path, wks_name, col_names=True)
     print(df)
