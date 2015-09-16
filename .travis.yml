@@ -15,9 +15,6 @@ install:
 
 script: 
   - "coverage run --source=df2gspread -m py.test tests"
-<<<<<<< HEAD
 
-=======
->>>>>>> travis
 after_success:
   - coveralls
