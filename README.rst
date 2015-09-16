@@ -70,7 +70,9 @@ Run df2gspread like::
     spreadsheet = '/some/folder/New Spreadsheet'
     # or spreadsheet file id 
     # spreadsheet = '1cIOgi90...'
+
     wks_name = 'New Sheet'
+    
     d2g.upload(df, spreadsheet, wks_name)
     # if spreadsheet already exists, all data of provided worksheet(or first as default) 
     # will be replaced with data of given DataFrame, make sure that this is what you need!  
