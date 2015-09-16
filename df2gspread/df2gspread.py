@@ -4,7 +4,7 @@
 # @Date:   2015-09-16 11:28:21
 # @Email:  etrott@redhat.com
 # @Last modified by:   etrott
-# @Last Modified time: 2015-09-16 12:43:14
+# @Last Modified time: 2015-09-16 14:54:39
 
 
 import os
@@ -82,16 +82,3 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None):
         for i, col in enumerate(df.columns.values):
             cell_list[i + j * len(df.columns.values)].value = df[col][idx]
     wks.update_cells(cell_list)
-
-
-if __name__ == "__main__":
-    # Basic test
-    from df2gspread import df2gspread
-    import pandas as pd
-    d = [pd.Series([1., 2., 3.], index=['a', 'b', 'c']),
-         pd.Series([1., 2., 3., 4.], index=['a', 'b', 'c', 'd'])]
-    df = pd.DataFrame(d)
-
-    path = '/some/folder/New Spreadsheet'
-    wks_name = 'New Sheet'
-    df2gspread.upload(df, path, wks_name)

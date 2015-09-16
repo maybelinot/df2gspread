@@ -4,7 +4,7 @@
 # @Date:   2015-09-16 11:45:16
 # @Email:  etrott@redhat.com
 # @Last modified by:   etrott
-# @Last Modified time: 2015-09-16 12:38:23
+# @Last Modified time: 2015-09-16 14:54:45
 
 
 import os
@@ -78,14 +78,3 @@ def download(gfile="/New Spreadsheet", wks_name=None, col_names=False,
     df.columns = col_names
 
     return df
-
-
-if __name__ == "__main__":
-    # Basic test
-    import gspread2df
-
-    gfile = '/some/file'
-    wks_name = 'Worksheet'
-
-    df = gspread2df.download(gfile, wks_name, col_names=True)
-    print(df)
