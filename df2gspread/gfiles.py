@@ -4,7 +4,7 @@
 # @Date:   2015-09-16 11:54:47
 # @Email:  etrott@redhat.com
 # @Last modified by:   etrott
-# @Last Modified time: 2015-09-16 12:41:37
+# @Last Modified time: 2015-09-16 14:12:14
 
 import re
 import httplib2
@@ -14,6 +14,7 @@ import gspread
 
 
 def get_file_id(credentials, gfile, write_access=False):
+    """DOCS..."""
     # auth for apiclient
     http = credentials.authorize(httplib2.Http())
     # FIXME: Different versions have different keys like v1:id, v2:fileId
@@ -59,6 +60,7 @@ def get_file_id(credentials, gfile, write_access=False):
 
 
 def get_worksheet(gc, gfile_id, wks_name, write_access=False):
+    """DOCS..."""
     if wks_name is not None:
         wsheet_match = lambda wks: re.match(
             r"<Worksheet '%s' id:\S+>" % (wks_name), str(wks))
@@ -88,6 +90,7 @@ def get_worksheet(gc, gfile_id, wks_name, write_access=False):
 
 
 def clear_worksheet(spsh, wks_name):
+    """DOCS..."""
     tmp_wks = None
 
     wkss = spsh.worksheets()
@@ -101,3 +104,13 @@ def clear_worksheet(spsh, wks_name):
         spsh.del_worksheet(tmp_wks)
 
     return wks
+
+
+def delete_file(credentials, file_id):
+    """DOCS..."""
+    try:
+        http = credentials.authorize(httplib2.Http())
+        service = discovery.build('drive', 'v2', http=http)
+        service.files().delete(fileId=file_id).execute()
+    except errors.HttpError, error:
+        raise RuntimeError('An error occurred: %s' % error)
