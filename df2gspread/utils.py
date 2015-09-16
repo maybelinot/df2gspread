@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Author: Eduard Trott
-# @Date:   2015-09-07 15:17:56
+# @Date:   2015-09-11 10:57:06
 # @Email:  etrott@redhat.com
 # @Last modified by:   etrott
-# @Last Modified time: 2015-09-09 13:56:50
+# @Last Modified time: 2015-09-16 11:52:18
 
-
-# PY3 COMPAT
 from __future__ import unicode_literals, absolute_import
 
 import logging

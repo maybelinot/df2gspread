@@ -1,26 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Author: Eduard Trott
-# @Date:   2015-09-08 09:59:24
+# @Date:   2015-09-16 11:45:16
 # @Email:  etrott@redhat.com
 # @Last modified by:   etrott
-# @Last Modified time: 2015-09-15 10:27:35
+# @Last Modified time: 2015-09-16 12:38:23
 
-from distutils.util import strtobool
-import httplib2
+
 import os
-import re
 import sys
 from string import ascii_uppercase
 
-from apiclient import discovery
 import gspread
-import oauth2client
 import pandas as pd
 import numpy as np
 
 from utils import CLIENT_SECRET_FILE, logr, get_credentials
-
+from gfiles import get_file_id, get_worksheet
 
 # FIXME: clarify scopes
 SCOPES = ('https://www.googleapis.com/auth/drive.metadata.readonly '
@@ -29,8 +25,8 @@ SCOPES = ('https://www.googleapis.com/auth/drive.metadata.readonly '
           'https://docs.google.com/feeds')
 
 
-def export(gfile="/New Spreadsheet", wks_name=None, col_names=False,
-           row_names=False):
+def download(gfile="/New Spreadsheet", wks_name=None, col_names=False,
+         row_names=False):
     '''
     FIXME DOCs
     '''
@@ -38,59 +34,22 @@ def export(gfile="/New Spreadsheet", wks_name=None, col_names=False,
     credentials = get_credentials()
     # auth for gspread
     gc = gspread.authorize(credentials)
+
     try:
+        # if gfile is file_id
         spsh = gc.open_by_key(gfile)
+        gfile_id = gfile
     except:
-        # auth for apiclient
-        http = credentials.authorize(httplib2.Http())
-        # FIXME: Different versions have different keys like v1:id, v2:fileId
-        service = discovery.build('drive', 'v2', http=http)
+        # else look for file_id in drive
+        gfile_id = get_file_id(credentials, gfile)
 
-        about = service.about().get().execute()
+    if gfile_id is None:
+        raise RuntimeError("Spreadsheet '%s' is not exist" % (gfile))
 
-        file_id = about['rootFolderId']
+    wks = get_worksheet(gc, gfile_id, wks_name)
 
-        pathway = gfile.split('/')
-
-        # folder/folder/folder/spreadsheet
-        for name in pathway:
-            if name == '':
-                continue
-            file_exists = False
-            # searching for all files in gdrive with given name
-            files = service.files().list(
-                q="title = '%s'" % (name,)).execute()['items']
-            for f in files:
-                # if file not trashed and previos file(or root for first
-                # file) in parents then remember file id
-                if not f['labels']['trashed'] and \
-                        any([file_id in parent['id'] for parent in f['parents']]):
-                    file_id = f['id']
-                    file_exists = True
-                    break
-            #  else error
-            if not file_exists:
-                sys.exit("Spreadsheet '%s' is not exist" % (gfile))
-        gfile = file_id
-
-    if wks_name is not None:
-        wsheet_match = lambda wks: re.match(
-            r"<Worksheet '%s' id:\S+>" % (wks_name), str(wks))
-    # connection to created spreadsheet via gspread
-    tmp_wks = None
-    try:
-        spsh = gc.open_by_key(gfile)
-        wkss = spsh.worksheets()
-        if wks_name is None:
-            wks = spsh.sheet1
-        elif any(map(wsheet_match, wkss)):
-            wks = spsh.worksheet(wks_name)
-        else:
-            sys.exit("Worksheet '%s' is not exist" % (wks_name))
-    except gspread.httpsession.HTTPError as e:
-        logr.error('Status:', e.response.status)
-        logr.error('Reason:', e.response.reason)
-        raise
+    if wks is None:
+        raise RuntimeError("Worksheet '%s' is not exist" % (wks_name))
 
     raw_data = wks.get_all_values()
 
@@ -125,8 +84,8 @@ if __name__ == "__main__":
     # Basic test
     import gspread2df
 
-    path = '/some/file'
+    gfile = '/some/file'
     wks_name = 'Worksheet'
 
-    df = gspread2df.export(path, wks_name, col_names=True)
+    df = gspread2df.download(gfile, wks_name, col_names=True)
     print(df)

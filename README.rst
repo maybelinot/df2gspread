@@ -53,24 +53,32 @@ USAGE
 =====
 Run df2gspread like::
 
-    from df2gspread import df2gspread
+    from df2gspread import df2gspread as d2g
     import pandas as pd
     d = [pd.Series([1., 2., 3.], index=['a', 'b', 'c']),
         pd.Series([1., 2., 3., 4.], index=['a', 'b', 'c', 'd'])]
     df = pd.DataFrame(d)
     
-    path = '/some/folder/New Spreadsheet'
+    # use full path to spreadsheet file
+    spreadsheet = '/some/folder/New Spreadsheet'
+    # or spreadsheet file id 
+    # spreadsheet = '1cIOgi90...'
     wks_name = 'New Sheet'
-    df2gspread.export(df, path, wks_name)
+    d2g.upload(df, spreadsheet, wks_name)
+    # if spreadsheet already exists, all data of provided worksheet(or first as default) 
+    # will be replaced with data of given DataFrame, make sure that this is what you need!  
 
 Run gspread2df like::
 
-    from df2gspread import gspread2df
+    from df2gspread import gspread2df as g2d
     
-    path = '/some/folder/New Spreadsheet'
+    # use full path to spreadsheet file
+    spreadsheet = '/some/folder/New Spreadsheet'
+    # or spreadsheet file id 
+    # spreadsheet = '1cIOgi90...'
     wks_name = 'New Sheet'
     
-    df = gspread2df.export(path, wks_name, col_names = True, row_names = True)
+    df = g2d.download(spreadsheet, wks_name, col_names = True, row_names = True)
 
 DEVELOPMENT
 ===========
