@@ -22,6 +22,14 @@ logr = logging.getLogger('members')
 ''' Load the file with credentials '''
 CLIENT_SECRET_FILE = os.path.expanduser('~/.gdrive_private')
 
+DEFAULT_TOKEN = os.path.expanduser('~/.oauth/drive.json')
+
+# FIXME: clarify scopes
+SCOPES = ('https://www.googleapis.com/auth/drive.metadata.readonly '
+          'https://www.googleapis.com/auth/drive '
+          'https://spreadsheets.google.com/feeds '
+          'https://docs.google.com/feeds')
+
 
 def run(cmd):
     cmd = cmd if isinstance(cmd, list) else cmd.split()
@@ -54,16 +62,9 @@ def get_credentials():
     except ImportError:
         flags = None
         logr.error(
-            'Unable to parse oauth2client args; `pip install argparse` required')
+            'Unable to parse oauth2client args; `pip install argparse`')
 
-    home_dir = os.path.expanduser('~')
-    credential_dir = os.path.join(home_dir, '.credentials')
-    if not os.path.exists(credential_dir):
-        os.makedirs(credential_dir)
-    credential_path = os.path.join(credential_dir,
-                                   'drive.json')
-
-    store = oauth2client.file.Storage(credential_path)
+    store = oauth2client.file.Storage(DEFAULT_TOKEN)
     credentials = store.get()
     if not credentials or credentials.invalid:
 
@@ -74,5 +75,5 @@ def get_credentials():
             credentials = oauth2client.tools.run_flow(flow, store, flags)
         else:  # Needed only for compatability with Python 2.6
             credentials = oauth2client.tools.run(flow, store)
-        logr.info('Storing credentials to ' + credential_path)
+        logr.info('Storing credentials to ' + DEFAULT_TOKEN)
     return credentials

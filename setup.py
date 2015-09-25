@@ -9,7 +9,7 @@
 
 # python-2.7 setup.py build
 
-from __future__ import absolute_import # , unicode_literals
+from __future__ import absolute_import  # , unicode_literals
 
 from setuptools import setup
 
@@ -26,6 +26,7 @@ __pkgdir__ = {'df2gspread': 'df2gspread',
               'gspread2df': 'df2gspread'}
 __pkgs__ = ['df2gspread']
 __desc__ = 'Export tables to Google Spreadsheets.'
+__scripts__ = ['bin/csv2gspread']
 __irequires__ = [
     # CORE DEPENDENCIES
     'argparse==1.3.0',
@@ -81,6 +82,7 @@ default_setup = dict(
     name=__pkg__,
     package_dir=__pkgdir__,
     packages=__pkgs__,
+    scripts=__scripts__,
     version=__version__,
     zip_safe=False,
 )
