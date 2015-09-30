@@ -9,14 +9,14 @@
 
 # python-2.7 setup.py build
 
-from __future__ import absolute_import  # , unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 from setuptools import setup
 
 VERSION_FILE = "df2gspread/_version.py"
 VERSION_EXEC = ''.join(open(VERSION_FILE).readlines())
 __version__ = ''
-exec(VERSION_EXEC)  # update __version__
+exec(str(VERSION_EXEC))  # update __version__
 if not __version__:
     raise RuntimeError("Unable to find version string in %s." % VERSION_FILE)
 
