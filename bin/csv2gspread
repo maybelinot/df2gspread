@@ -1,0 +1,57 @@
+#!/usr/bin/env python
+# coding: utf-8
+# Author: "Chris Ward" <cward@redhat.com>
+
+# PY3 Compatability
+from __future__ import unicode_literals, absolute_import
+
+import argparse
+from datetime import datetime
+import logging
+from StringIO import StringIO
+
+import pandas as pd
+
+from df2gspread.df2gspread import upload
+from df2gspread.utils import logr
+
+def parse_cli():
+    """
+    Set the command line arguments.
+    """
+    epilog = ""
+    parser = argparse.ArgumentParser(epilog=epilog)
+    parser.add_argument('path',
+                        default="/New SpreadSheet {}".format(datetime.utcnow()),
+                        help="Google Drive Path to save Spreadsheet Document to")
+    parser.add_argument('--csv', type = argparse.FileType('r'), default = '-')
+    parser.add_argument('-w', '--worksheet', help="Spreadsheet Worksheet name")
+    parser.add_argument('--verbose', '-v', action='store_true',
+                        help="verbose output")
+    parser.add_argument('--debug', '-d', action='store_true',
+                        help="debug output")
+
+    args = vars(parser.parse_args())  # parse and load args as a dict
+
+    # Go ahead and deal with logging debug/verbosity setting
+    if args['debug']:
+        logr.setLevel(logging.DEBUG)
+    elif args['verbose']:
+        logr.setLevel(logging.INFO)
+    else:
+        logr.setLevel(logging.WARN)
+
+    return args
+
+
+if __name__ == "__main__":
+    # Load the user config file from their home directory
+    args = parse_cli()
+
+    path = args['path']
+    worksheet = args['worksheet']
+    data = ''.join(args['csv'].readlines())
+
+    data = StringIO(data)
+    df = pd.read_csv(data)
+    upload(df, path, worksheet)

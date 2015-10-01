@@ -4,29 +4,20 @@
 # @Date:   2015-09-16 11:28:21
 # @Email:  etrott@redhat.com
 # @Last modified by:   etrott
-# @Last Modified time: 2015-09-16 14:54:39
+# @Last Modified time: 2015-10-01 12:25:16
 
 
-import os
-import sys
 from string import ascii_uppercase
 
 import gspread
 
-from utils import CLIENT_SECRET_FILE, logr, get_credentials
+from utils import get_credentials
 from gfiles import get_file_id, get_worksheet
 
 try:
     input = raw_input
 except NameError:  # Python 3
     pass
-
-
-# FIXME: clarify scopes
-SCOPES = ('https://www.googleapis.com/auth/drive.metadata.readonly '
-          'https://www.googleapis.com/auth/drive '
-          'https://spreadsheets.google.com/feeds '
-          'https://docs.google.com/feeds')
 
 
 def upload(df, gfile="/New Spreadsheet", wks_name=None):
@@ -40,9 +31,9 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None):
 
     try:
         # if gfile is file_id
-        spsh = gc.open_by_key(gfile)
+        gc.open_by_key(gfile)
         gfile_id = gfile
-    except:
+    except Exception:
         # else look for file_id in drive
         gfile_id = get_file_id(credentials, gfile, write_access=True)
 
