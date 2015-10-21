@@ -15,6 +15,5 @@ install:
 
 script: 
   - "coverage run --source=df2gspread -m py.test tests"
-
 after_success:
   - coveralls
