@@ -9,5 +9,5 @@
 
 from __future__ import unicode_literals, absolute_import
 
-version_info = ('0', '0', '3')
+version_info = ('0', '0', '4')
 __version__ = '.'.join(version_info[0:3])  # + '-' + version_info[3]
