@@ -9,7 +9,7 @@
 
 # python-2.7 setup.py build
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import
 
 from setuptools import setup
 
@@ -22,8 +22,7 @@ if not __version__:
 
 # acceptable version schema: major.minor[.patch][-sub[ab]]
 __pkg__ = 'df2gspread'
-__pkgdir__ = {'df2gspread': 'df2gspread',
-              'gspread2df': 'df2gspread'}
+__pkgdir__ = {'df2gspread': 'df2gspread'}
 __pkgs__ = ['df2gspread']
 __desc__ = 'Export tables to Google Spreadsheets.'
 __scripts__ = ['bin/csv2gspread']
