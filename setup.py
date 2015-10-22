@@ -4,7 +4,7 @@
 # @Date:   2015-09-04 14:04:46
 # @Email:  etrott@redhat.com
 # @Last modified by:   etrott
-# @Last Modified time: 2015-09-15 09:06:45
+# @Last Modified time: 2015-10-22 15:54:22
 
 
 # python-2.7 setup.py build
@@ -53,7 +53,7 @@ readme_pth = 'README.rst'
 with open(readme_pth) as _file:
     readme = _file.read()
 
-github = 'https://github.com/etrott/df2gspread'
+github = 'https://github.com/maybelinot/df2gspread'
 download_url = '%s/archive/master.zip' % github
 
 default_setup = dict(

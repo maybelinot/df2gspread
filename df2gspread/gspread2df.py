@@ -4,7 +4,7 @@
 # @Date:   2015-09-16 11:45:16
 # @Email:  etrott@redhat.com
 # @Last modified by:   etrott
-# @Last Modified time: 2015-09-16 14:54:45
+# @Last Modified time: 2015-10-01 14:55:15
 
 
 import os
@@ -15,7 +15,7 @@ import gspread
 import pandas as pd
 import numpy as np
 
-from utils import CLIENT_SECRET_FILE, logr, get_credentials
+from utils import logr, get_credentials
 from gfiles import get_file_id, get_worksheet
 
 # FIXME: clarify scopes
