@@ -9,20 +9,23 @@ INSTALLATION
 ============
 Example install, using VirtualEnv::
 
-    # install/use python virtual environment
-    virtualenv ~/virtenv_scratch --no-site-packages
+   # install/use python virtual environment
+   virtualenv ~/virtenv_scratch --no-site-packages
 
-    # activate the virtual environment
-    source ~/virtenv_scratch/bin/activate
+   # activate the virtual environment
+   source ~/virtenv_scratch/bin/activate
 
-    # upgrade pip in the new virtenv
-    pip install -U pip setuptools
+   # upgrade pip in the new virtenv
+   pip install -U pip setuptools
 
-    # install this package in DEVELOPMENT mode
-    python setup.py develop
+   # install this package in DEVELOPMENT mode
+   # python setup.py develop
 
-    # or simply install
-    # python setup.py install
+   # simply install
+   # python setup.py install
+    
+   # or install via pip
+   pip install df2gspread
 
 ACCESS CREDENTIALS
 ==================
