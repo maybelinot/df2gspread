@@ -8,6 +8,7 @@
 
 
 from string import ascii_uppercase
+from itertools import islice
 
 import gspread
 
@@ -20,7 +21,7 @@ except NameError:  # Python 3
     pass
 
 
-def upload(df, gfile="/New Spreadsheet", wks_name=None):
+def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=100):
     '''
     FIXME DOCs
     '''
@@ -72,4 +73,14 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None):
     for j, idx in enumerate(df.index):
         for i, col in enumerate(df.columns.values):
             cell_list[i + j * len(df.columns.values)].value = df[col][idx]
-    wks.update_cells(cell_list)
+    for cells in grouper(chunk_size, cell_list):
+        wks.update_cells(list(cells))
+
+
+def grouper(n, iterable):
+    it = iter(iterable)
+    while True:
+       chunk = tuple(islice(it, n))
+       if not chunk:
+           return
+       yield chunk
