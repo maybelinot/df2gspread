@@ -112,5 +112,5 @@ def delete_file(credentials, file_id):
         http = credentials.authorize(httplib2.Http())
         service = discovery.build('drive', 'v2', http=http)
         service.files().delete(fileId=file_id).execute()
-    except errors.HttpError, error:
+    except errors.HttpError as error:
         raise RuntimeError('An error occurred: %s' % error)

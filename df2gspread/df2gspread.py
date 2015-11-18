@@ -11,8 +11,8 @@ from string import ascii_uppercase
 
 import gspread
 
-from utils import get_credentials
-from gfiles import get_file_id, get_worksheet
+from .utils import get_credentials
+from .gfiles import get_file_id, get_worksheet
 
 try:
     input = raw_input

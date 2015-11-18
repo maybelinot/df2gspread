@@ -7,7 +7,7 @@
 # @Last Modified time: 2015-09-16 14:46:02
 
 
-from __future__ import absolute_import
+
 
 import pytest
 

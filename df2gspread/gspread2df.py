@@ -15,8 +15,8 @@ import gspread
 import pandas as pd
 import numpy as np
 
-from utils import logr, get_credentials
-from gfiles import get_file_id, get_worksheet
+from .utils import logr, get_credentials
+from .gfiles import get_file_id, get_worksheet
 
 # FIXME: clarify scopes
 SCOPES = ('https://www.googleapis.com/auth/drive.metadata.readonly '

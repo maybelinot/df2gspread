@@ -9,7 +9,7 @@
 
 # python-2.7 setup.py build
 
-from __future__ import absolute_import
+
 
 from setuptools import setup
 
@@ -28,11 +28,11 @@ __desc__ = 'Export tables to Google Spreadsheets.'
 __scripts__ = ['bin/csv2gspread']
 __irequires__ = [
     # CORE DEPENDENCIES
-    'argparse==1.3.0',
-    'google-api-python-client==1.4.1',
+    'argparse',
+    'google-api-python-client',
     'gspread==0.2.5',
     'oauth2client>=1.4.12',
-    'pandas==0.16.2',
+    'pandas',
 ]
 __xrequires__ = {
     'tests': [
