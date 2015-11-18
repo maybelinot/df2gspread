@@ -21,7 +21,7 @@ except NameError:  # Python 3
     pass
 
 
-def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=100):
+def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000):
     '''
     FIXME DOCs
     '''
