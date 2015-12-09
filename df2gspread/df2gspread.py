@@ -4,7 +4,7 @@
 # @Date:   2015-09-16 11:28:21
 # @Email:  etrott@redhat.com
 # @Last modified by:   etrott
-# @Last Modified time: 2015-10-01 12:25:16
+# @Last Modified time: 2015-12-09 19:28:44
 
 
 from string import ascii_uppercase
@@ -20,7 +20,8 @@ except NameError:  # Python 3
     pass
 
 
-def upload(df, gfile="/New Spreadsheet", wks_name=None):
+def upload(df, gfile="/New Spreadsheet", wks_name=None, col_names=True,
+           row_names=True, clean=True):
     '''
     FIXME DOCs
     '''
@@ -37,12 +38,15 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None):
         # else look for file_id in drive
         gfile_id = get_file_id(credentials, gfile, write_access=True)
 
-    wks = get_worksheet(gc, gfile_id, wks_name, write_access=True)
+    if clean:
+        wks = get_worksheet(gc, gfile_id, wks_name, write_access=True)
+    else:
+        wks = get_worksheet(gc, gfile_id, wks_name)
 
     # find last index and column name (A B ... Z AA AB ... AZ BA)
-    last_idx = len(df.index)
+    last_idx = len(df.index) if col_names else len(df.index) - 1
 
-    seq_num = len(df.columns)
+    seq_num = len(df.columns) if row_names else len(df.columns) - 1
     last_col = ''
     while seq_num >= 0:
         last_col = ascii_uppercase[seq_num % len(ascii_uppercase)] + last_col
@@ -55,20 +59,27 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None):
     if len(df.columns) + 1 > wks.col_count:
         wks.add_cols(len(df.columns) - wks.col_count + 1)
 
+    # Define first cell for rows and columns
+    first_col = 'B1' if row_names else 'A1'
+    first_row = 'A2' if col_names else 'A1'
+
     # Addition of col names
-    cell_list = wks.range('B1:%s1' % (last_col, ))
-    for idx, cell in enumerate(cell_list):
-        cell.value = df.columns.values[idx]
-    wks.update_cells(cell_list)
+    if col_names:
+        cell_list = wks.range('%s:%s1' % (first_col, last_col))
+        for idx, cell in enumerate(cell_list):
+            cell.value = df.columns.values[idx]
+        wks.update_cells(cell_list)
 
     # Addition of row names
-    cell_list = wks.range('A2:A%d' % (last_idx + 1, ))
-    for idx, cell in enumerate(cell_list):
-        cell.value = df.index[idx]
-    wks.update_cells(cell_list)
+    if row_names:
+        cell_list = wks.range('%s:A%d' % (first_row, last_idx + 1))
+        for idx, cell in enumerate(cell_list):
+            cell.value = df.index[idx]
+        wks.update_cells(cell_list)
 
     # Addition of cell values
-    cell_list = wks.range('B2:%s%d' % (last_col, last_idx + 1))
+    cell_list = wks.range('%s%s:%s%d' % (
+        first_col[0], first_row[1], last_col, last_idx + 1))
     for j, idx in enumerate(df.index):
         for i, col in enumerate(df.columns.values):
             cell_list[i + j * len(df.columns.values)].value = df[col][idx]
