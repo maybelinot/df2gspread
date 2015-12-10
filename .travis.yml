@@ -4,8 +4,8 @@ cache:
 language: python
 python:
   - "2.7"
-    #  - "3.3"  # ## SEE BELOW FOR EXPLANATION
-    #  - "3.4"  # ## SEE BELOW FOR EXPLANATION
+  - "3.3"  # ## SEE BELOW FOR EXPLANATION
+  - "3.4"  # ## SEE BELOW FOR EXPLANATION
 install:
   - "pip install -U pip setuptools virtualenv"
   - "pip install coveralls"
