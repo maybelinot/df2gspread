@@ -4,7 +4,7 @@
 # @Date:   2015-09-04 14:04:46
 # @Email:  etrott@redhat.com
 # @Last modified by:   etrott
-# @Last Modified time: 2015-12-10 13:40:15
+# @Last Modified time: 2015-12-10 14:41:54
 
 
 # python-2.7 setup.py build
@@ -28,7 +28,7 @@ __desc__ = 'Export tables to Google Spreadsheets.'
 __scripts__ = ['bin/csv2gspread']
 __irequires__ = [
     # CORE DEPENDENCIES
-    'argparse',
+    'argparse==1.3.0',
     'google-api-python-client==1.4.2',
     'gspread==0.2.5',
     'oauth2client>=1.4.12',
