@@ -4,15 +4,16 @@
 # @Date:   2015-09-16 11:28:21
 # @Email:  etrott@redhat.com
 # @Last modified by:   etrott
-# @Last Modified time: 2015-12-09 19:28:44
+# @Last Modified time: 2015-12-10 13:17:39
 
 
 from string import ascii_uppercase
+from itertools import islice
 
 import gspread
 
-from utils import get_credentials
-from gfiles import get_file_id, get_worksheet
+from .utils import get_credentials
+from .gfiles import get_file_id, get_worksheet
 
 try:
     input = raw_input
@@ -20,8 +21,8 @@ except NameError:  # Python 3
     pass
 
 
-def upload(df, gfile="/New Spreadsheet", wks_name=None, col_names=True,
-           row_names=True, clean=True):
+def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
+           col_names=True, row_names=True, clean=True):
     '''
     FIXME DOCs
     '''
@@ -83,4 +84,14 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, col_names=True,
     for j, idx in enumerate(df.index):
         for i, col in enumerate(df.columns.values):
             cell_list[i + j * len(df.columns.values)].value = df[col][idx]
-    wks.update_cells(cell_list)
+    for cells in grouper(chunk_size, cell_list):
+        wks.update_cells(list(cells))
+
+
+def grouper(n, iterable):
+    it = iter(iterable)
+    while True:
+        chunk = tuple(islice(it, n))
+        if not chunk:
+            return
+        yield chunk

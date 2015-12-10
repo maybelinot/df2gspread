@@ -4,7 +4,7 @@
 # @Date:   2015-09-16 11:54:47
 # @Email:  etrott@redhat.com
 # @Last modified by:   etrott
-# @Last Modified time: 2015-12-09 19:26:30
+# @Last Modified time: 2015-12-10 13:48:26
 
 import re
 import httplib2
@@ -122,5 +122,5 @@ def delete_file(credentials, file_id):
         http = credentials.authorize(httplib2.Http())
         service = discovery.build('drive', 'v2', http=http)
         service.files().delete(fileId=file_id).execute()
-    except errors.HttpError, error:
+    except errors.HttpError as error:
         raise RuntimeError('An error occurred: %s' % error)

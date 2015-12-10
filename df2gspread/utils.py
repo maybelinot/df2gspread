@@ -6,7 +6,7 @@
 # @Last modified by:   etrott
 # @Last Modified time: 2015-10-01 12:44:06
 
-from __future__ import unicode_literals, absolute_import
+
 
 import logging
 import os
