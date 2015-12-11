@@ -130,7 +130,9 @@ def create_service_credentials(private_key_file=None, client_email=None,
     if client_email is None:
         with open(client_secret_file) as client_file:
             client_data = json.load(client_file)
+
             if 'installed' in client_data:
+
                 # handle regular json format where key is separate
                 client_email = client_data['installed']['client_id']
                 if private_key is None:
@@ -138,8 +140,12 @@ def create_service_credentials(private_key_file=None, client_email=None,
                                        with the regular json file. Try creating a new \
                                        public/private key pair and downloading as json.')
             else:
+                # handle newer case where json file has everything in it
                 client_email = client_data['client_email']
                 private_key = client_data['private_key']
+
+    if client_email is None or private_key is None:
+        raise RuntimeError('Client email and/or private key not provided by inputs.')
 
     credentials = client.SignedJwtAssertionCredentials(client_email, private_key, SCOPES)
 
