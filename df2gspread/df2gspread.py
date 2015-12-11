@@ -22,12 +22,12 @@ except NameError:  # Python 3
 
 
 def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
-           col_names=True, row_names=True, clean=True):
+           col_names=True, row_names=True, clean=True, credentials=True):
     '''
     FIXME DOCs
     '''
     # access credentials
-    credentials = get_credentials()
+    credentials = get_credentials(credentials)
     # auth for gspread
     gc = gspread.authorize(credentials)
 
