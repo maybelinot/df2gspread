@@ -12,7 +12,6 @@ def test_client_secrets_credentials(service_credentials,
     key_file = service_credentials['key_file']
     client_file = service_credentials['client_file']
 
-    cred = create_service_credentials(private_key=key_file,
-                                      client_email=client_file)
+    cred = create_service_credentials(private_key_file=key_file, client_email=client_file)
 
     assert _is_valid_credentials(cred)

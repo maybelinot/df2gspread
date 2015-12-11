@@ -104,7 +104,7 @@ def _is_valid_credentials(credentials):
     return isinstance(credentials, client.OAuth2Credentials)
 
 
-def create_service_credentials(private_key, client_email=None,
+def create_service_credentials(private_key_file=None, client_email=None,
                                client_secret_file=CLIENT_SECRET_FILE):
     """Create credentials from service account information.
 
@@ -112,20 +112,34 @@ def create_service_credentials(private_key, client_email=None,
         https://developers.google.com/api-client-library/python/auth/service-accounts
 
     Args:
+        client_secret_file (str): path to json file with just the client_email when
+            providing the `private_key_file` separately, or this file can have both the
+            `client_email` and `private_key` contained in it. Defaults to .gdrive_private
         client_email (str): service email account
-        private_key (str): path to the p12 private key, defaults to same name of file
+        private_key_file (str): path to the p12 private key, defaults to same name of file
             used for regular authentication
 
     Returns:
         `~oauth2client.client.OAuth2Credentials`: google credentials object
 
     """
-    with open(os.path.expanduser(private_key)) as f:
-        private_key = f.read()
+    if private_key_file is not None:
+        with open(os.path.expanduser(private_key_file)) as f:
+            private_key = f.read()
 
     if client_email is None:
-        with json.load(client_secret_file) as client_data:
-            client_email = client_data['installed']['client_id']
+        with open(client_secret_file) as client_file:
+            client_data = json.load(client_file)
+            if 'installed' in client_data:
+                # handle regular json format where key is separate
+                client_email = client_data['installed']['client_id']
+                if private_key is None:
+                    raise RuntimeError('You must have the private key file \
+                                       with the regular json file. Try creating a new \
+                                       public/private key pair and downloading as json.')
+            else:
+                client_email = client_data['client_email']
+                private_key = client_data['private_key']
 
     credentials = client.SignedJwtAssertionCredentials(client_email, private_key, SCOPES)
 

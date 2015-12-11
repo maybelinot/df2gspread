@@ -32,8 +32,8 @@ def service_credentials_not_available(service_credentials):
     client_email_file = service_credentials['client_file']
 
     try:
-        _ = create_service_credentials(client_secret_file=client_email_file,
-                                       private_key=key_file)
+        _ = create_service_credentials(private_key_file=key_file,
+                                       client_secret_file=client_email_file)
         should_fail = False
     except IOError:
         should_fail = True
