@@ -1,6 +1,5 @@
 
 import pytest
-
 from df2gspread.utils import (get_credentials,
                               create_service_credentials)
 
@@ -19,7 +18,7 @@ def user_credentials_not_available():
     try:
         _ = get_credentials()
         should_fail = False
-    except IOError:
+    except Exception:
         should_fail = True
 
     return should_fail
@@ -35,7 +34,7 @@ def service_credentials_not_available(service_credentials):
         _ = create_service_credentials(private_key_file=key_file,
                                        client_secret_file=client_email_file)
         should_fail = False
-    except IOError:
+    except Exception:
         should_fail = True
 
     return should_fail
