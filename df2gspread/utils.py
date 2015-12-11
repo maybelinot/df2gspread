@@ -7,11 +7,11 @@
 # @Last Modified time: 2015-10-01 12:44:06
 
 
-
 import logging
 import os
 import subprocess
 import sys
+import json
 
 from oauth2client import file, client, tools
 
@@ -34,12 +34,6 @@ SCOPES = ('https://www.googleapis.com/auth/drive.metadata.readonly '
 DEFAULT_TOKEN = os.path.expanduser('~/.oauth/drive.json')
 
 
-SCOPES = ('https://www.googleapis.com/auth/drive.metadata.readonly '
-          'https://www.googleapis.com/auth/drive '
-          'https://spreadsheets.google.com/feeds '
-          'https://docs.google.com/feeds')
-
-
 def run(cmd):
     cmd = cmd if isinstance(cmd, list) else cmd.split()
     try:
@@ -58,12 +52,28 @@ def run(cmd):
     return output, errors
 
 
-def get_credentials():
+def get_credentials(client_secret_file=CLIENT_SECRET_FILE, credentials=None):
+    """Consistently returns valid credentials object.
+
+    See Also:
+        https://developers.google.com/drive/web/quickstart/python
+
+    Args:
+        client_secret_file (str): path to client secrets file, defaults to .gdrive_private
+        credentials (`~oauth2client.client.OAuth2Credentials`, optional): handle direct
+            input of credentials, which will check credentials for valid type and
+            return them
+
+    Returns:
+        `~oauth2client.client.OAuth2Credentials`: google credentials object
+
     """
-    FIXME DOCs
-    Taken from:
-    https://developers.google.com/drive/web/quickstart/python
-    """
+
+    # if the utility was provided credentials just return those
+    if _is_valid_credentials(credentials):
+        # auth for gspread
+        return credentials
+
     try:
         import argparse
         flags = argparse.ArgumentParser(
@@ -73,14 +83,13 @@ def get_credentials():
         logr.error(
             'Unable to parse oauth2client args; `pip install argparse`')
 
-
     store = file.Storage(DEFAULT_TOKEN)
 
     credentials = store.get()
     if not credentials or credentials.invalid:
 
         flow = client.flow_from_clientsecrets(
-            CLIENT_SECRET_FILE, SCOPES)
+            client_secret_file, SCOPES)
         flow.redirect_uri = client.OOB_CALLBACK_URN
         if flags:
             credentials = tools.run_flow(flow, store, flags)
@@ -89,3 +98,36 @@ def get_credentials():
         logr.info('Storing credentials to ' + DEFAULT_TOKEN)
 
     return credentials
+
+
+def _is_valid_credentials(credentials):
+    return isinstance(credentials, client.OAuth2Credentials)
+
+
+def create_service_credentials(private_key, client_email=None,
+                               client_secret_file=CLIENT_SECRET_FILE):
+    """Create credentials from service account information.
+
+    See Also:
+        https://developers.google.com/api-client-library/python/auth/service-accounts
+
+    Args:
+        client_email (str): service email account
+        private_key (str): path to the p12 private key, defaults to same name of file
+            used for regular authentication
+
+    Returns:
+        `~oauth2client.client.OAuth2Credentials`: google credentials object
+
+    """
+    with open(os.path.expanduser(private_key)) as f:
+        private_key = f.read()
+
+    if client_email is None:
+        with json.load(client_secret_file) as client_data:
+            client_email = client_data['installed']['client_id']
+
+    credentials = client.SignedJwtAssertionCredentials(client_email, private_key, SCOPES)
+
+    return credentials
+
