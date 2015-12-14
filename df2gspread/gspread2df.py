@@ -4,7 +4,7 @@
 # @Date:   2015-09-16 11:45:16
 # @Email:  etrott@redhat.com
 # @Last modified by:   etrott
-# @Last Modified time: 2015-12-09 18:37:35
+# @Last Modified time: 2015-12-14 12:26:39
 
 
 import os
@@ -71,9 +71,7 @@ def download(gfile="/New Spreadsheet", wks_name=None, col_names=False,
         raw_data = raw_data[1:]
     else:
         row_names = np.arange(len(raw_data))
-        print(row_names)
         col_names = np.arange(len(raw_data[0]))
-        print(col_names)
 
     df = pd.DataFrame([pd.Series(row) for row in raw_data], index=row_names)
     df.columns = col_names

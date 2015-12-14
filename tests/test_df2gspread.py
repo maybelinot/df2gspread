@@ -4,10 +4,7 @@
 # @Date:   2015-09-16 13:25:41
 # @Email:  etrott@redhat.com
 # @Last modified by:   etrott
-# @Last Modified time: 2015-09-16 14:46:02
-
-
-
+# @Last Modified time: 2015-12-14 13:46:10
 
 import pytest
 
@@ -19,7 +16,8 @@ def test_global_import():
 
 def test_spreadsheet(user_credentials_not_available):
 
-    pytest.mark.xfail(condition=user_credentials_not_available, reason='Credentials')
+    if user_credentials_not_available:
+        pytest.xfail(reason='Credentials')
 
     import string
     import random
@@ -54,7 +52,8 @@ def test_spreadsheet(user_credentials_not_available):
 
 def test_worksheet(user_credentials_not_available):
 
-    pytest.mark.xfail(condition=user_credentials_not_available, reason='Credentials')
+    if user_credentials_not_available:
+        pytest.xfail(reason='Credentials')
 
     import string
     import random
@@ -86,7 +85,3 @@ def test_worksheet(user_credentials_not_available):
     credentials = get_credentials()
     file_id = get_file_id(credentials, filepath)
     delete_file(credentials, file_id)
-
-
-if __name__ == "__main__":
-    test_worksheet()

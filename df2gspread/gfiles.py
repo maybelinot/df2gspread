@@ -4,7 +4,7 @@
 # @Date:   2015-09-16 11:54:47
 # @Email:  etrott@redhat.com
 # @Last modified by:   etrott
-# @Last Modified time: 2015-12-10 13:48:26
+# @Last Modified time: 2015-12-14 13:46:08
 
 import re
 import httplib2
@@ -37,7 +37,7 @@ def get_file_id(credentials, gfile, write_access=False):
         files = service.files().list(
             q="title = '%s'" % (name,)).execute()['items']
         for f in files:
-            # if file not trashed and previos file(or root for first
+            # if file not trashed and previous file(or root for first
             # file) in parents then remember file id
             if not f['labels']['trashed'] and \
                     any([file_id in parent['id'] for parent in f['parents']]):
