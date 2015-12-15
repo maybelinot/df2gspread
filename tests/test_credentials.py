@@ -5,7 +5,8 @@ import pytest
 def test_client_secrets_credentials(service_credentials,
                                     service_credentials_not_available):
 
-    pytest.mark.xfail(condition=service_credentials_not_available, reason='Credentials')
+    if service_credentials_not_available:
+        pytest.mark.xfail(reason='Service Credentials Not Available')
 
     from df2gspread.utils import create_service_credentials, _is_valid_credentials
 

@@ -54,7 +54,8 @@ def test_spreadsheet(user_credentials_not_available):
 
 def test_worksheet(user_credentials_not_available):
 
-    pytest.mark.xfail(condition=user_credentials_not_available, reason='Credentials')
+    if user_credentials_not_available:
+        pytest.mark.xfail(reason='Credentials')
 
     import string
     import random
