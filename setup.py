@@ -33,6 +33,7 @@ __irequires__ = [
     'gspread==0.2.5',
     'oauth2client>=1.4.12',
     'pandas',
+    'pycrypto'
 ]
 __xrequires__ = {
     'tests': [

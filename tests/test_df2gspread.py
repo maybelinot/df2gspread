@@ -17,8 +17,10 @@ def test_global_import():
     from df2gspread import df2gspread
 
 
-@pytest.mark.xfail(reason="Credentials")
-def test_spreadsheet():
+def test_spreadsheet(user_credentials_not_available):
+
+    pytest.mark.xfail(condition=user_credentials_not_available, reason='Credentials')
+
     import string
     import random
     import pandas as pd
@@ -50,8 +52,11 @@ def test_spreadsheet():
     delete_file(credentials, file_id)
 
 
-@pytest.mark.xfail(reason="Credentials")
-def test_worksheet():
+def test_worksheet(user_credentials_not_available):
+
+    if user_credentials_not_available:
+        pytest.mark.xfail(reason='Credentials')
+
     import string
     import random
     import pandas as pd
@@ -82,6 +87,7 @@ def test_worksheet():
     credentials = get_credentials()
     file_id = get_file_id(credentials, filepath)
     delete_file(credentials, file_id)
+
 
 if __name__ == "__main__":
     test_worksheet()

@@ -26,12 +26,13 @@ SCOPES = ('https://www.googleapis.com/auth/drive.metadata.readonly '
 
 
 def download(gfile="/New Spreadsheet", wks_name=None, col_names=False,
-             row_names=False):
+             row_names=False, credentials=None):
     '''
     FIXME DOCs
     '''
+
     # access credentials
-    credentials = get_credentials()
+    credentials = get_credentials(credentials)
     # auth for gspread
     gc = gspread.authorize(credentials)
 
