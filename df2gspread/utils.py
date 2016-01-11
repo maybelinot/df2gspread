@@ -52,7 +52,7 @@ def run(cmd):
     return output, errors
 
 
-def get_credentials(client_secret_file=CLIENT_SECRET_FILE, credentials=None):
+def get_credentials(credentials=None, client_secret_file=CLIENT_SECRET_FILE):
     """Consistently returns valid credentials object.
 
     See Also:
@@ -126,9 +126,11 @@ def create_service_credentials(private_key_file=None, client_email=None,
     if private_key_file is not None:
         with open(os.path.expanduser(private_key_file)) as f:
             private_key = f.read()
+    else:
+        private_key = None
 
     if client_email is None:
-        with open(client_secret_file) as client_file:
+        with open(os.path.expanduser(client_secret_file)) as client_file:
             client_data = json.load(client_file)
 
             if 'installed' in client_data:
