@@ -4,7 +4,7 @@
 # @Date:   2015-09-16 11:28:21
 # @Email:  etrott@redhat.com
 # @Last modified by:   etrott
-# @Last Modified time: 2015-12-10 13:17:39
+# @Last Modified time: 2016-01-18 13:29:59
 
 
 from string import ascii_uppercase
@@ -24,7 +24,34 @@ except NameError:  # Python 3
 def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
            col_names=True, row_names=True, clean=True, credentials=True):
     '''
-    FIXME DOCs
+        Upload given Pandas DataFrame to Google Drive and returns 
+        gspread Worksheet object
+
+        :param gfile: path to Google Spreadsheet or gspread ID
+        :param wks_name: worksheet name
+        :param chunk_size: size of chunk to upload
+        :param col_names: assing top row to column names for Pandas DataFrame
+        :param row_names: assing left column to row names for Pandas DataFrame
+        :param clean: clean all data in worksheet before uploading 
+        :param credentials: provide own credentials
+        :type gfile: str
+        :type wks_name: str
+        :type chunk_size: int
+        :type col_names: bool
+        :type row_names: bool
+        :type clean: bool
+        :type credentials: class 'oauth2client.client.OAuth2Credentials'
+        :returns: gspread Worksheet
+        :rtype: class 'gspread.models.Worksheet'
+
+        :Example:
+
+            >>> from df2gspread import df2gspread as d2g
+            >>> import pandas as pd
+            >>> df = pd.DataFrame([1 2 3])
+            >>> wks = d2g.upload(df, wks_name='Example worksheet')
+            >>> wks.title
+            'Example worksheet'
     '''
     # access credentials
     credentials = get_credentials(credentials)
@@ -86,6 +113,8 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
             cell_list[i + j * len(df.columns.values)].value = df[col][idx]
     for cells in grouper(chunk_size, cell_list):
         wks.update_cells(list(cells))
+
+    return wks
 
 
 def grouper(n, iterable):

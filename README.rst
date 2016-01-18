@@ -1,12 +1,45 @@
-.. image:: https://travis-ci.org/maybelinot/df2gspread.png
-   :target: https://travis-ci.org/maybelinot/df2gspread
+==================
+    df2gspread
+==================
 
-.. image:: https://coveralls.io/repos/maybelinot/df2gspread/badge.svg
-  :target: https://coveralls.io/r/maybelinot/df2gspread
+Transfer data between Google Spreadsheets and Pandas DataFrame.
 
 
-INSTALLATION
-============
+Description
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Python library that provides possibility to transport table-data 
+between Google Spreadsheets and Pandas DataFrame for further 
+management or processing.
+Can be useful in all cases, when you need to handle the data 
+located in Google Drive.
+
+
+Status
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. list-table::
+   :widths: 5 6
+   :stub-columns: 1 
+   :header-rows: 0
+
+   * - Latest Release
+     - .. image:: https://badge.fury.io/py/df2gspread.svg
+          :target: http://badge.fury.io/py/df2gspread 
+   * - Build
+     - .. image:: https://travis-ci.org/maybelinot/df2gspread.png
+          :target: https://travis-ci.org/maybelinot/df2gspread
+   * - Coverage
+     - .. image:: https://coveralls.io/repos/maybelinot/df2gspread/badge.svg
+          :target: https://coveralls.io/r/maybelinot/df2gspread
+
+   * - Docs
+     - .. image:: https://readthedocs.org/projects/df2gspread/badge/
+          :target: https://readthedocs.org/projects/df2gspread/
+
+          
+Install
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Example install, using VirtualEnv::
 
    # install/use python virtual environment
@@ -27,12 +60,13 @@ Example install, using VirtualEnv::
    # or install via pip
    pip install df2gspread
 
-ACCESS CREDENTIALS
-==================
-To allow a script to use Google Drive API we need to authenticate our self 
-towards Google.  To do so, we need to create a project, describing the tool 
-and generate credentials. Please use your web browser and go to 
-`Google console <https://console.developers.google.com>`_ and :
+
+Access Credentials
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+To allow a script to use Google Drive API we need to authenticate 
+our self towards Google.  To do so, we need to create a project, 
+describing the tool and generate credentials. Please use your web 
+browser and go to `Google console <https://console.developers.google.com>`_ and :
 
 * Choose **"Create Project"** in popup menu on the top.
 
@@ -57,8 +91,8 @@ and generate credentials. Please use your web browser and go to
 * Then, the first time you run it your browser window will open a google authorization request page. Approve authorization and then the credentials will work as expected.
 
 
-USAGE
-=====
+Usage
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Run df2gspread like::
 
     from df2gspread import df2gspread as d2g
@@ -90,8 +124,14 @@ Run gspread2df like::
     
     df = g2d.download(spreadsheet, wks_name, col_names = True, row_names = True)
 
-DEVELOPMENT
-===========
+
+Documentation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Documentation is available at http://df2gspread.readthedocs.org/.
+
+
+Development
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Install the supplied githooks; eg::
 
     ln -s ~/repos/df2gspread/_githooks/commit-msg ~/repos/df2gspread/.git/hooks/commit-msg
