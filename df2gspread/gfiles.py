@@ -4,13 +4,15 @@
 # @Date:   2015-09-16 11:54:47
 # @Email:  etrott@redhat.com
 # @Last modified by:   etrott
-# @Last Modified time: 2015-12-14 13:46:08
+# @Last Modified time: 2016-01-19 14:01:20
 
 import re
 import httplib2
 
-from apiclient import discovery
+from apiclient import discovery, errors
 import gspread
+
+from .utils import logr
 
 
 def get_file_id(credentials, gfile, write_access=False):
@@ -69,16 +71,10 @@ def get_worksheet(gc, gfile_id, wks_name, write_access=False):
         wkss = spsh.worksheets()
         # if worksheet name is not provided , take first worksheet
         if wks_name is None:
-            if write_access == True:
-                wks = clear_worksheet(spsh)
-            else:
-                wks = spsh.sheet1
+            wks = spsh.sheet1
         # if worksheet name provided and exist in given spreadsheet
         elif any(map(wsheet_match, wkss)):
-            if write_access == True:
-                wks = clear_worksheet(spsh, wks_name)
-            else:
-                wks = spsh.worksheet(wks_name)
+            wks = spsh.worksheet(wks_name)
         else:
             if write_access == True:
                 wks = spsh.add_worksheet(wks_name, 1000, 100)
@@ -92,35 +88,12 @@ def get_worksheet(gc, gfile_id, wks_name, write_access=False):
     return wks
 
 
-def clear_worksheet(spsh, wks_name=None):
-    """DOCS..."""
-    tmp_wks = None
-
-    wkss = spsh.worksheets()
-    if len(wkss) == 1:
-        tmp_wks = spsh.add_worksheet('tmp', 1, 1)
-    if wks_name:
-        wks = spsh.worksheet(wks_name)
-    else:
-        wks = spsh.sheet1
-
-    spsh.del_worksheet(wks)
-    if wks_name:
-        wks = spsh.add_worksheet(wks_name, 1000, 100)
-    else:
-        wks = spsh.add_worksheet('Sheet1', 1000, 100)
-
-    if tmp_wks:
-        spsh.del_worksheet(tmp_wks)
-
-    return wks
-
-
 def delete_file(credentials, file_id):
     """DOCS..."""
     try:
         http = credentials.authorize(httplib2.Http())
         service = discovery.build('drive', 'v2', http=http)
         service.files().delete(fileId=file_id).execute()
-    except errors.HttpError as error:
-        raise RuntimeError('An error occurred: %s' % error)
+    except errors.HttpError as e:
+        logr.error('Status:', e)
+        raise

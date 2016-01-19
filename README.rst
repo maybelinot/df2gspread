@@ -32,10 +32,15 @@ Status
    * - Coverage
      - .. image:: https://coveralls.io/repos/maybelinot/df2gspread/badge.svg
           :target: https://coveralls.io/r/maybelinot/df2gspread
-
    * - Docs
      - .. image:: https://readthedocs.org/projects/df2gspread/badge/
           :target: https://readthedocs.org/projects/df2gspread/
+   * - Downloads
+     - .. image:: https://img.shields.io/pypi/dm/df2gspread.svg
+          :target: https://pypi.python.org/pypi/df2gspread/
+   * - License
+     - .. image:: https://img.shields.io/pypi/l/df2gspread.svg
+          :target: https://pypi.python.org/pypi/df2gspread/
 
           
 Install
@@ -128,6 +133,13 @@ Run gspread2df like::
 Documentation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Documentation is available at http://df2gspread.readthedocs.org/.
+
+
+Testing
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Testing is py.test based. Run with::
+
+    py.test tests/ -v
 
 
 Development

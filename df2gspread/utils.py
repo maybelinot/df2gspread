@@ -4,7 +4,7 @@
 # @Date:   2015-09-11 10:57:06
 # @Email:  etrott@redhat.com
 # @Last modified by:   etrott
-# @Last Modified time: 2015-10-01 12:44:06
+# @Last Modified time: 2016-01-19 14:27:12
 
 
 import logging
@@ -29,7 +29,6 @@ SCOPES = ('https://www.googleapis.com/auth/drive.metadata.readonly '
           'https://www.googleapis.com/auth/drive '
           'https://spreadsheets.google.com/feeds '
           'https://docs.google.com/feeds')
-
 
 DEFAULT_TOKEN = os.path.expanduser('~/.oauth/drive.json')
 
@@ -147,9 +146,10 @@ def create_service_credentials(private_key_file=None, client_email=None,
                 private_key = client_data['private_key']
 
     if client_email is None or private_key is None:
-        raise RuntimeError('Client email and/or private key not provided by inputs.')
+        raise RuntimeError(
+            'Client email and/or private key not provided by inputs.')
 
-    credentials = client.SignedJwtAssertionCredentials(client_email, private_key, SCOPES)
+    credentials = client.SignedJwtAssertionCredentials(
+        client_email, private_key, SCOPES)
 
     return credentials
-

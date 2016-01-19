@@ -4,7 +4,7 @@
 # @Date:   2015-09-16 11:45:16
 # @Email:  etrott@redhat.com
 # @Last modified by:   etrott
-# @Last Modified time: 2016-01-18 13:20:56
+# @Last Modified time: 2016-01-19 13:30:40
 
 
 import os
@@ -67,12 +67,14 @@ def download(gfile, wks_name=None, col_names=False,
         gfile_id = get_file_id(credentials, gfile)
 
     if gfile_id is None:
-        raise RuntimeError("Spreadsheet '%s' is not exist" % (gfile))
+        raise RuntimeError(
+            "Trying to open non-existent or inaccessible spreadsheet")
 
     wks = get_worksheet(gc, gfile_id, wks_name)
 
     if wks is None:
-        raise RuntimeError("Worksheet '%s' is not exist" % (wks_name))
+        raise RuntimeError(
+            "Trying to open non-existent or inaccessible worksheet")
 
     raw_data = wks.get_all_values()
 

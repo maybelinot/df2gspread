@@ -4,12 +4,13 @@
 # @Date:   2015-09-16 11:28:21
 # @Email:  etrott@redhat.com
 # @Last modified by:   etrott
-# @Last Modified time: 2016-01-18 13:29:59
+# @Last Modified time: 2016-01-19 12:33:05
 
 
 from string import ascii_uppercase
 from itertools import islice
 
+import pandas as pd
 import gspread
 
 from .utils import get_credentials
@@ -22,11 +23,12 @@ except NameError:  # Python 3
 
 
 def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
-           col_names=True, row_names=True, clean=True, credentials=True):
+           col_names=True, row_names=True, clean=True, credentials=None):
     '''
         Upload given Pandas DataFrame to Google Drive and returns 
         gspread Worksheet object
 
+        :param df: Pandas DataFrame
         :param gfile: path to Google Spreadsheet or gspread ID
         :param wks_name: worksheet name
         :param chunk_size: size of chunk to upload
@@ -34,6 +36,7 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
         :param row_names: assing left column to row names for Pandas DataFrame
         :param clean: clean all data in worksheet before uploading 
         :param credentials: provide own credentials
+        :type df: class 'pandas.core.frame.DataFrame'
         :type gfile: str
         :type wks_name: str
         :type chunk_size: int
@@ -66,10 +69,9 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
         # else look for file_id in drive
         gfile_id = get_file_id(credentials, gfile, write_access=True)
 
+    wks = get_worksheet(gc, gfile_id, wks_name, write_access=True)
     if clean:
-        wks = get_worksheet(gc, gfile_id, wks_name, write_access=True)
-    else:
-        wks = get_worksheet(gc, gfile_id, wks_name)
+        wks = clean_worksheet(wks, gfile_id, wks_name)
 
     # find last index and column name (A B ... Z AA AB ... AZ BA)
     last_idx = len(df.index) if col_names else len(df.index) - 1
@@ -124,3 +126,16 @@ def grouper(n, iterable):
         if not chunk:
             return
         yield chunk
+
+
+def clean_worksheet(wks, gfile_id, wks_name):
+    """DOCS..."""
+
+    values = wks.get_all_values()
+    if values:
+        df_ = pd.DataFrame(index=range(len(values)),
+                           columns=range(len(values[0])))
+        df_ = df_.fillna('')
+        wks = upload(df_, gfile_id, wks_name=wks_name,
+                     col_names=False, row_names=False, clean=False)
+    return wks
