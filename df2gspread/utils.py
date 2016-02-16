@@ -81,7 +81,10 @@ def get_credentials(credentials=None, client_secret_file=CLIENT_SECRET_FILE):
         flags = None
         logr.error(
             'Unable to parse oauth2client args; `pip install argparse`')
-
+    
+    token_folder = os.path.split(DEFAULT_TOKEN)[0]
+    if not os.path.exists(token_folder):
+        os.makedirs(token_folder)
     store = file.Storage(DEFAULT_TOKEN)
 
     credentials = store.get()
