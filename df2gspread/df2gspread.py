@@ -4,7 +4,7 @@
 # @Date:   2015-09-16 11:28:21
 # @Email:  etrott@redhat.com
 # @Last modified by:   etrott
-# @Last Modified time: 2016-01-19 12:33:05
+# @Last Modified time: 2016-03-08 12:35:42
 
 
 from string import ascii_uppercase
@@ -71,7 +71,7 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
 
     wks = get_worksheet(gc, gfile_id, wks_name, write_access=True)
     if clean:
-        wks = clean_worksheet(wks, gfile_id, wks_name)
+        wks = clean_worksheet(wks, gfile_id, wks_name, credentials)
 
     # find last index and column name (A B ... Z AA AB ... AZ BA)
     last_idx = len(df.index) if col_names else len(df.index) - 1
@@ -128,7 +128,7 @@ def grouper(n, iterable):
         yield chunk
 
 
-def clean_worksheet(wks, gfile_id, wks_name):
+def clean_worksheet(wks, gfile_id, wks_name, credentials):
     """DOCS..."""
 
     values = wks.get_all_values()
@@ -137,5 +137,6 @@ def clean_worksheet(wks, gfile_id, wks_name):
                            columns=range(len(values[0])))
         df_ = df_.fillna('')
         wks = upload(df_, gfile_id, wks_name=wks_name,
-                     col_names=False, row_names=False, clean=False)
+                     col_names=False, row_names=False, clean=False,
+                     credentials=credentials)
     return wks

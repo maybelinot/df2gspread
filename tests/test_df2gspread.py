@@ -4,7 +4,7 @@
 # @Date:   2015-09-16 13:25:41
 # @Email:  etrott@redhat.com
 # @Last modified by:   etrott
-# @Last Modified time: 2016-01-19 14:22:34
+# @Last Modified time: 2016-03-08 12:38:03
 
 import pytest
 
@@ -22,7 +22,7 @@ def test_version_check():
     # THIS NEEDS TO BE UPDATED EVERY TIME THE MAIN PACKAGE
     # VERSION IS UPDATED!!!
     ######################################################
-    _v = '0.1.0'
+    _v = '0.1.2'
 
     if _version.__version__ != _v:
         raise SystemError('SYNC VERSION in tests/test_members.py')
