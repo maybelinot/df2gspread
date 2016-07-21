@@ -61,7 +61,7 @@ def get_file_id(credentials, gfile, write_access=False):
     return file_id
 
 
-def get_worksheet(gc, gfile_id, wks_name, write_access=False):
+def get_worksheet(gc, gfile_id, wks_name, write_access=False, new_sheet_dimensions=(1000,100)):
     """DOCS..."""
     if wks_name is not None:
         wsheet_match = lambda wks: re.match(
@@ -77,7 +77,8 @@ def get_worksheet(gc, gfile_id, wks_name, write_access=False):
             wks = spsh.worksheet(wks_name)
         else:
             if write_access == True:
-                wks = spsh.add_worksheet(wks_name, 1000, 100)
+                rows, cols = new_sheet_dimensions
+                wks = spsh.add_worksheet(wks_name, rows, cols)
             else:
                 wks = None
     except gspread.httpsession.HTTPError as e:
