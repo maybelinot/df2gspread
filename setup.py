@@ -30,7 +30,7 @@ __irequires__ = [
     # CORE DEPENDENCIES
     'argparse>=1.3.0',
     'google-api-python-client==1.4.2',
-    'gspread==0.2.5',
+    'gspread==0.4.1',
     'oauth2client>=1.4.12',
     'pandas',
     'pycrypto'
