@@ -30,8 +30,6 @@ SCOPES = ('https://www.googleapis.com/auth/drive.metadata.readonly '
           'https://spreadsheets.google.com/feeds '
           'https://docs.google.com/feeds')
 
-DEFAULT_TOKEN = os.path.expanduser('~/.oauth/drive.json')
-
 
 def run(cmd):
     cmd = cmd if isinstance(cmd, list) else cmd.split()
