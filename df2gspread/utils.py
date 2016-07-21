@@ -48,6 +48,13 @@ def run(cmd):
         sys.exit(process.returncode)
     return output, errors
 
+def convert_to_oauth_credentials(token_file=None):
+    """Convert the specified token file into an oauth object that can be passed
+    directly as the credentials parameter to the upload or download functions.
+    """
+    token = os.path.expanduser(token_file)
+    store = file.Storage(token)
+    return store.get()
 
 def get_credentials(credentials=None, client_secret_file=CLIENT_SECRET_FILE):
     """Consistently returns valid credentials object.
