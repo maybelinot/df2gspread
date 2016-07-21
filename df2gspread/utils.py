@@ -67,9 +67,12 @@ def get_credentials(credentials=None, client_secret_file=CLIENT_SECRET_FILE):
     """
 
     # if the utility was provided credentials just return those
-    if _is_valid_credentials(credentials):
-        # auth for gspread
-        return credentials
+    if credentials:
+        if _is_valid_credentials(credentials):
+            # auth for gspread
+            return credentials
+        else:
+            print("Invalid credentials supplied. Will generate from default token.")
 
     try:
         import argparse
