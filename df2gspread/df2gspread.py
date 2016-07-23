@@ -75,14 +75,16 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
         wks = clean_worksheet(wks, gfile_id, wks_name, credentials)
 
     start_col = start_cell[0].upper()
-    start_row = start_cell[1]
+    start_row = start_cell[1:]
 
     # find last index and column name (A B ... Z AA AB ... AZ BA)
     last_idx = len(df.index) if col_names else len(df.index) - 1
-    last_idx = last_idx + int(start_row) - 1
+    last_idx_adjust = int(start_row) - 1
+    last_idx = last_idx + last_idx_adjust
 
     seq_num = len(df.columns) if row_names else len(df.columns) - 1
-    seq_num = seq_num + ord(start_col.upper()) - 65
+    seq_adjust = ord(start_col.upper()) - 65
+    seq_num = seq_num + seq_adjust
 
     last_col = ''
     while seq_num >= 0:
@@ -90,11 +92,11 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
         seq_num = seq_num // len(ascii_uppercase) - 1
 
     # if pandas df large then given worksheet then increes num of cols or rows
-    if len(df.index) + 1 > wks.row_count:
-        wks.add_rows(len(df.index) - wks.row_count + 1)
+    if len(df.index) + 1 + last_idx_adjust > wks.row_count:
+        wks.add_rows(len(df.index) - wks.row_count + 1 + last_idx_adjust)
 
-    if len(df.columns) + 1 > wks.col_count:
-        wks.add_cols(len(df.columns) - wks.col_count + 1)
+    if len(df.columns) + 1 + seq_adjust > wks.col_count:
+        wks.add_cols(len(df.columns) - wks.col_count + 1 + seq_adjust)
 
     # Define first cell for rows and columns
     first_col = chr(ord(start_col) + 1) + start_row if row_names else start_col + start_row
@@ -116,7 +118,7 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
 
     # Addition of cell values
     cell_list = wks.range('%s%s:%s%d' % (
-        first_col[0], first_row[1], last_col, last_idx + 1))
+        first_col[0], first_row[1:], last_col, last_idx + 1))
     for j, idx in enumerate(df.index):
         for i, col in enumerate(df.columns.values):
             cell_list[i + j * len(df.columns.values)].value = df[col][idx]
