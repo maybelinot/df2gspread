@@ -38,6 +38,7 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
         :param row_names: passing left column to row names for Pandas DataFrame
         :param clean: clean all data in worksheet before uploading 
         :param credentials: provide own credentials
+        :param start_cell: specify where to insert the DataFrame; default is A1
         :type df: class 'pandas.core.frame.DataFrame'
         :type gfile: str
         :type wks_name: str
@@ -46,6 +47,7 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
         :type row_names: bool
         :type clean: bool
         :type credentials: class 'oauth2client.client.OAuth2Credentials'
+        :type start_cell: str
         :returns: gspread Worksheet
         :rtype: class 'gspread.models.Worksheet'
 
