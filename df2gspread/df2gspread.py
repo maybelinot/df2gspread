@@ -23,7 +23,8 @@ except NameError:  # Python 3
 
 
 def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
-           col_names=True, row_names=True, clean=True, credentials=None):
+           col_names=True, row_names=True, clean=True, credentials=None,
+           start_cell = 'A1'):
     '''
         Upload given Pandas DataFrame to Google Drive and returns 
         gspread Worksheet object
@@ -73,10 +74,16 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
     if clean:
         wks = clean_worksheet(wks, gfile_id, wks_name, credentials)
 
+    start_col = start_cell[0].upper()
+    start_row = start_cell[1]
+
     # find last index and column name (A B ... Z AA AB ... AZ BA)
     last_idx = len(df.index) if col_names else len(df.index) - 1
+    last_idx = last_idx + int(start_row) - 1
 
     seq_num = len(df.columns) if row_names else len(df.columns) - 1
+    seq_num = seq_num + ord(start_col.upper()) - 65
+
     last_col = ''
     while seq_num >= 0:
         last_col = ascii_uppercase[seq_num % len(ascii_uppercase)] + last_col
@@ -90,19 +97,19 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
         wks.add_cols(len(df.columns) - wks.col_count + 1)
 
     # Define first cell for rows and columns
-    first_col = 'B1' if row_names else 'A1'
-    first_row = 'A2' if col_names else 'A1'
+    first_col = chr(ord(start_col) + 1) + start_row if row_names else start_col + start_row
+    first_row = start_col + str(int(start_row) + 1) if col_names else start_col + start_row
 
     # Addition of col names
     if col_names:
-        cell_list = wks.range('%s:%s1' % (first_col, last_col))
+        cell_list = wks.range('%s:%s%s' % (first_col, last_col,start_row))
         for idx, cell in enumerate(cell_list):
             cell.value = df.columns.values[idx]
         wks.update_cells(cell_list)
 
     # Addition of row names
     if row_names:
-        cell_list = wks.range('%s:A%d' % (first_row, last_idx + 1))
+        cell_list = wks.range('%s:%s%d' % (first_row, start_col, last_idx + 1))
         for idx, cell in enumerate(cell_list):
             cell.value = df.index[idx]
         wks.update_cells(cell_list)
