@@ -30,8 +30,6 @@ SCOPES = ('https://www.googleapis.com/auth/drive.metadata.readonly '
           'https://spreadsheets.google.com/feeds '
           'https://docs.google.com/feeds')
 
-DEFAULT_TOKEN = os.path.expanduser('~/.oauth/drive.json')
-
 
 def run(cmd):
     cmd = cmd if isinstance(cmd, list) else cmd.split()
@@ -50,8 +48,7 @@ def run(cmd):
         sys.exit(process.returncode)
     return output, errors
 
-
-def get_credentials(credentials=None, client_secret_file=CLIENT_SECRET_FILE):
+def get_credentials(credentials=None, client_secret_file=CLIENT_SECRET_FILE, refresh_token=None):
     """Consistently returns valid credentials object.
 
     See Also:
@@ -59,6 +56,8 @@ def get_credentials(credentials=None, client_secret_file=CLIENT_SECRET_FILE):
 
     Args:
         client_secret_file (str): path to client secrets file, defaults to .gdrive_private
+        refresh_token (str): path to a user provided refresh token that is already 
+            pre-authenticated
         credentials (`~oauth2client.client.OAuth2Credentials`, optional): handle direct
             input of credentials, which will check credentials for valid type and
             return them
@@ -66,12 +65,15 @@ def get_credentials(credentials=None, client_secret_file=CLIENT_SECRET_FILE):
     Returns:
         `~oauth2client.client.OAuth2Credentials`: google credentials object
 
-    """
+    """      
 
     # if the utility was provided credentials just return those
-    if _is_valid_credentials(credentials):
-        # auth for gspread
-        return credentials
+    if credentials:
+        if _is_valid_credentials(credentials):
+            # auth for gspread
+            return credentials
+        else:
+            print("Invalid credentials supplied. Will generate from default token.")
 
     try:
         import argparse
@@ -82,10 +84,13 @@ def get_credentials(credentials=None, client_secret_file=CLIENT_SECRET_FILE):
         logr.error(
             'Unable to parse oauth2client args; `pip install argparse`')
     
-    token_folder = os.path.split(DEFAULT_TOKEN)[0]
-    if not os.path.exists(token_folder):
-        os.makedirs(token_folder)
-    store = file.Storage(DEFAULT_TOKEN)
+    if refresh_token:
+        store = file.Storage(os.path.expanduser(refresh_token))
+    else:
+        token_folder = os.path.split(DEFAULT_TOKEN)[0]
+        if not os.path.exists(token_folder):
+            os.makedirs(token_folder)
+        store = file.Storage(DEFAULT_TOKEN)
 
     credentials = store.get()
     if not credentials or credentials.invalid:
