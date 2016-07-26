@@ -56,7 +56,7 @@ def get_credentials(credentials=None, client_secret_file=CLIENT_SECRET_FILE, ref
 
     Args:
         client_secret_file (str): path to client secrets file, defaults to .gdrive_private
-        refresh_token (str): path to a user provided refresh token that is already 
+        refresh_token (str): path to a user provided refresh token that is already
             pre-authenticated
         credentials (`~oauth2client.client.OAuth2Credentials`, optional): handle direct
             input of credentials, which will check credentials for valid type and
@@ -65,7 +65,7 @@ def get_credentials(credentials=None, client_secret_file=CLIENT_SECRET_FILE, ref
     Returns:
         `~oauth2client.client.OAuth2Credentials`: google credentials object
 
-    """      
+    """
 
     # if the utility was provided credentials just return those
     if credentials:
@@ -75,6 +75,10 @@ def get_credentials(credentials=None, client_secret_file=CLIENT_SECRET_FILE, ref
         else:
             print("Invalid credentials supplied. Will generate from default token.")
 
+    token = refresh_token or DEFAULT_TOKEN
+    store = file.Storage(token)
+    credentials = store.get()
+
     try:
         import argparse
         flags = argparse.ArgumentParser(
@@ -83,16 +87,7 @@ def get_credentials(credentials=None, client_secret_file=CLIENT_SECRET_FILE, ref
         flags = None
         logr.error(
             'Unable to parse oauth2client args; `pip install argparse`')
-    
-    if refresh_token:
-        store = file.Storage(os.path.expanduser(refresh_token))
-    else:
-        token_folder = os.path.split(DEFAULT_TOKEN)[0]
-        if not os.path.exists(token_folder):
-            os.makedirs(token_folder)
-        store = file.Storage(DEFAULT_TOKEN)
 
-    credentials = store.get()
     if not credentials or credentials.invalid:
 
         flow = client.flow_from_clientsecrets(
