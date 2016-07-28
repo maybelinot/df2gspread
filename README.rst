@@ -8,10 +8,10 @@ Transfer data between Google Spreadsheets and Pandas DataFrame.
 Description
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Python library that provides possibility to transport table-data 
-between Google Spreadsheets and Pandas DataFrame for further 
+Python library that provides possibility to transport table-data
+between Google Spreadsheets and Pandas DataFrame for further
 management or processing.
-Can be useful in all cases, when you need to handle the data 
+Can be useful in all cases, when you need to handle the data
 located in Google Drive.
 
 
@@ -20,12 +20,12 @@ Status
 
 .. list-table::
    :widths: 5 6
-   :stub-columns: 1 
+   :stub-columns: 1
    :header-rows: 0
 
    * - Latest Release
      - .. image:: https://badge.fury.io/py/df2gspread.svg
-          :target: http://badge.fury.io/py/df2gspread 
+          :target: http://badge.fury.io/py/df2gspread
    * - Build
      - .. image:: https://travis-ci.org/maybelinot/df2gspread.png
           :target: https://travis-ci.org/maybelinot/df2gspread
@@ -39,7 +39,7 @@ Status
      - .. image:: https://img.shields.io/pypi/l/df2gspread.svg
           :target: https://pypi.python.org/pypi/df2gspread/
 
-          
+
 Install
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Example install, using VirtualEnv::
@@ -58,16 +58,16 @@ Example install, using VirtualEnv::
 
    # simply install
    # python setup.py install
-    
+
    # or install via pip
    pip install df2gspread
 
 
 Access Credentials
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-To allow a script to use Google Drive API we need to authenticate 
-our self towards Google.  To do so, we need to create a project, 
-describing the tool and generate credentials. Please use your web 
+To allow a script to use Google Drive API we need to authenticate
+our self towards Google.  To do so, we need to create a project,
+describing the tool and generate credentials. Please use your web
 browser and go to `Google console <https://console.developers.google.com>`_ and :
 
 * Choose **"Create Project"** in popup menu on the top.
@@ -88,7 +88,7 @@ browser and go to `Google console <https://console.developers.google.com>`_ and 
 
 * Click on **"Create"** button.
 
-* Click on **"Download JSON"** icon on the right side of created **"OAuth 2.0 client IDs"** and store the downloaded file on your file system. Please be aware, the file contains your private credentials, so take care of the file in the same way you care of your private SSH key; i.e. move downloaded JSON file to **~/.gdrive_private**. 
+* Click on **"Download JSON"** icon on the right side of created **"OAuth 2.0 client IDs"** and store the downloaded file on your file system. Please be aware, the file contains your private credentials, so take care of the file in the same way you care of your private SSH key; i.e. move downloaded JSON file to **~/.gdrive_private**.
 
 * Then, the first time you run it your browser window will open a google authorization request page. Approve authorization and then the credentials will work as expected.
 
@@ -102,28 +102,28 @@ Run df2gspread like::
     d = [pd.Series([1., 2., 3.], index=['a', 'b', 'c']),
         pd.Series([1., 2., 3., 4.], index=['a', 'b', 'c', 'd'])]
     df = pd.DataFrame(d)
-    
+
     # use full path to spreadsheet file
     spreadsheet = '/some/folder/New Spreadsheet'
-    # or spreadsheet file id 
+    # or spreadsheet file id
     # spreadsheet = '1cIOgi90...'
 
     wks_name = 'New Sheet'
-    
+
     d2g.upload(df, spreadsheet, wks_name)
-    # if spreadsheet already exists, all data of provided worksheet(or first as default) 
-    # will be replaced with data of given DataFrame, make sure that this is what you need!  
+    # if spreadsheet already exists, all data of provided worksheet(or first as default)
+    # will be replaced with data of given DataFrame, make sure that this is what you need!
 
 Run gspread2df like::
 
     from df2gspread import gspread2df as g2d
-    
+
     # use full path to spreadsheet file
     spreadsheet = '/some/folder/New Spreadsheet'
-    # or spreadsheet file id 
+    # or spreadsheet file id
     # spreadsheet = '1cIOgi90...'
     wks_name = 'New Sheet'
-    
+
     df = g2d.download(spreadsheet, wks_name, col_names = True, row_names = True)
 
 
