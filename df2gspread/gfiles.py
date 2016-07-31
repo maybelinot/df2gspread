@@ -77,8 +77,8 @@ def get_worksheet(gc, gfile_id, wks_name, write_access=False, new_sheet_dimensio
             wks = spsh.worksheet(wks_name)
         else:
             if write_access == True:
-                rows, cols = new_sheet_dimensions
-                wks = spsh.add_worksheet(wks_name, rows, cols)
+                #rows, cols = new_sheet_dimensions
+                wks = spsh.add_worksheet(wks_name, *new_sheet_dimensions)
             else:
                 wks = None
     except gspread.httpsession.HTTPError as e:

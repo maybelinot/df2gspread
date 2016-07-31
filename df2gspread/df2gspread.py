@@ -59,7 +59,7 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
         :type credentials: class 'oauth2client.client.OAuth2Credentials'
         :type start_cell: str
         :type df_size: bool
-        :type df_size: tuple
+        :type new_sheet_dimensions: tuple
         :returns: gspread Worksheet
         :rtype: class 'gspread.models.Worksheet'
 
@@ -90,8 +90,6 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
     # then for new sheets set it to new_sheet_dimensions, which is by default 1000x100
     if df_size:
         new_sheet_dimensions = (len(df), len(df.columns))
-    else:
-        new_sheet_dimensions = new_sheet_dimensions
 
     wks = get_worksheet(gc, gfile_id, wks_name, write_access=True, 
         new_sheet_dimensions=new_sheet_dimensions)
@@ -116,14 +114,12 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
     # resize larger or smaller to better match new size of pandas dataframe.
     # Otherwise, leave it the same size unless the sheet needs to be expanded
     # to accomodate a larger dataframe.
-    extra_col = 1 if col_names else 0
-    extra_row = 1 if row_names else 0
     if df_size:
-        wks.resize(rows=len(df.index) + extra_row, cols=len(df.columns) + extra_col)
-    if len(df.index) + extra_row + last_idx_adjust > wks.row_count:
-        wks.add_rows(len(df.index) - wks.row_count + extra_row + last_idx_adjust)
-    if len(df.columns) + extra_col + last_col_adjust  > wks.col_count:
-        wks.add_cols(len(df.columns) - wks.col_count + extra_col + last_col_adjust )
+        wks.resize(rows=len(df.index) + row_names, cols=len(df.columns) + col_names)
+    if len(df.index) + row_names + last_idx_adjust > wks.row_count:
+        wks.add_rows(len(df.index) - wks.row_count + row_names + last_idx_adjust)
+    if len(df.columns) + col_names + last_col_adjust  > wks.col_count:
+        wks.add_cols(len(df.columns) - wks.col_count + col_names + last_col_adjust )
 
     # Define first cell for rows and columns
     first_col = re.split('(\d+)',(wks.get_addr_int(1, start_col_int + 1)))[0].upper() if row_names else start_col
