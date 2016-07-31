@@ -127,7 +127,7 @@ def test_worksheet(user_credentials_not_available):
     delete_file(credentials, file_id)
 
 
-def test_start_cell(user_credentials_not_available):
+def test_gspread2df_start_cell(user_credentials_not_available):
     if user_credentials_not_available:
         pytest.xfail(reason='Credentials')
 
@@ -140,6 +140,9 @@ def test_start_cell(user_credentials_not_available):
 
     from df2gspread import df2gspread as d2g
     from df2gspread import gspread2df as g2d
+    from df2gspread.utils import get_credentials
+    from df2gspread.gfiles import get_file_id
+    from df2gspread.gfiles import delete_file
 
     filepath = '/df2gspread_tests/' + ''.join(
         random.choice(string.ascii_uppercase + string.digits)
@@ -152,8 +155,7 @@ def test_start_cell(user_credentials_not_available):
         3: ['4', '2', 'z', '4']},
         index=[0, 1, 2, 3])
 
-    # First worksheet as default
-
+    # Start cell out of the table size
     d2g.upload(df_upload, filepath, row_names=False, col_names=False)
     with pytest.raises(RuntimeError):
         df_download = g2d.download(filepath, start_cell='A5')
@@ -164,15 +166,21 @@ def test_start_cell(user_credentials_not_available):
     # Should be fixed in gspread
     # with pytest.raises(RuntimeError):
     #     df_download = g2d.download(filepath, start_cell='A0')
-    #
+
+    # start_cell = 'A3'
     d2g.upload(df_upload, filepath, row_names=False, col_names=False)
     df_download = g2d.download(filepath, start_cell='A3')
     assert_array_equal(df_upload.iloc[2:,:], df_download)
 
-
+    # start_cell = 'B3'
     d2g.upload(df_upload, filepath, row_names=False, col_names=False)
     df_download = g2d.download(filepath, start_cell='B3')
     assert_array_equal(df_upload.iloc[2:,1:], df_download)
+
+    # Clear created file from drive
+    credentials = get_credentials()
+    file_id = get_file_id(credentials, filepath)
+    delete_file(credentials, file_id)
 
 
 def test_big_worksheet(user_credentials_not_available):
