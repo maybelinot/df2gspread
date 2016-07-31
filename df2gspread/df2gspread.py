@@ -12,6 +12,7 @@ from itertools import islice
 
 import pandas as pd
 import gspread
+import re
 
 from .utils import get_credentials
 from .gfiles import get_file_id, get_worksheet
@@ -23,7 +24,8 @@ except NameError:  # Python 3
 
 
 def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
-           col_names=True, row_names=True, clean=True, credentials=None):
+           col_names=True, row_names=True, clean=True, credentials=None,
+           start_cell = 'A1'):
     '''
         Upload given Pandas DataFrame to Google Drive and returns 
         gspread Worksheet object
@@ -32,10 +34,11 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
         :param gfile: path to Google Spreadsheet or gspread ID
         :param wks_name: worksheet name
         :param chunk_size: size of chunk to upload
-        :param col_names: assing top row to column names for Pandas DataFrame
-        :param row_names: assing left column to row names for Pandas DataFrame
+        :param col_names: passing top row to column names for Pandas DataFrame
+        :param row_names: passing left column to row names for Pandas DataFrame
         :param clean: clean all data in worksheet before uploading 
         :param credentials: provide own credentials
+        :param start_cell: specify where to insert the DataFrame; default is A1
         :type df: class 'pandas.core.frame.DataFrame'
         :type gfile: str
         :type wks_name: str
@@ -44,6 +47,7 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
         :type row_names: bool
         :type clean: bool
         :type credentials: class 'oauth2client.client.OAuth2Credentials'
+        :type start_cell: str
         :returns: gspread Worksheet
         :rtype: class 'gspread.models.Worksheet'
 
@@ -73,43 +77,48 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
     if clean:
         wks = clean_worksheet(wks, gfile_id, wks_name, credentials)
 
+    start_col = re.split('(\d+)',start_cell)[0].upper()
+    start_row = re.split('(\d+)',start_cell)[1]
+    start_row_int, start_col_int = wks.get_int_addr(start_cell)
+
     # find last index and column name (A B ... Z AA AB ... AZ BA)
-    last_idx = len(df.index) if col_names else len(df.index) - 1
+    num_rows = len(df.index) + 1 if col_names else len(df.index)
+    last_idx_adjust = start_row_int - 1
+    last_idx = num_rows + last_idx_adjust
 
-    seq_num = len(df.columns) if row_names else len(df.columns) - 1
-    last_col = ''
-    while seq_num >= 0:
-        last_col = ascii_uppercase[seq_num % len(ascii_uppercase)] + last_col
-        seq_num = seq_num // len(ascii_uppercase) - 1
+    num_cols = len(df.columns) + 1 if row_names else len(df.columns)
+    last_col_adjust = start_col_int - 1
+    last_col_int = num_cols + last_col_adjust
+    last_col = re.split('(\d+)',(wks.get_addr_int(1, last_col_int)))[0].upper()
 
-    # if pandas df large then given worksheet then increes num of cols or rows
-    if len(df.index) + 1 > wks.row_count:
-        wks.add_rows(len(df.index) - wks.row_count + 1)
+    # if pandas df large than given worksheet then increase num of cols or rows
+    if len(df.index) + 1 + last_idx_adjust > wks.row_count:
+        wks.add_rows(len(df.index) - wks.row_count + 1 + last_idx_adjust)
 
-    if len(df.columns) + 1 > wks.col_count:
-        wks.add_cols(len(df.columns) - wks.col_count + 1)
+    if len(df.columns) + 1 + last_col_adjust > wks.col_count:
+        wks.add_cols(len(df.columns) - wks.col_count + 1 + last_col_adjust)
 
     # Define first cell for rows and columns
-    first_col = 'B1' if row_names else 'A1'
-    first_row = 'A2' if col_names else 'A1'
+    first_col = re.split('(\d+)',(wks.get_addr_int(1, start_col_int + 1)))[0].upper() if row_names else start_col
+    first_row = str(start_row_int + 1) if col_names else start_row
 
     # Addition of col names
     if col_names:
-        cell_list = wks.range('%s:%s1' % (first_col, last_col))
+        cell_list = wks.range('%s%s:%s%s' % (first_col, start_row, last_col, start_row))
         for idx, cell in enumerate(cell_list):
             cell.value = df.columns.values[idx]
         wks.update_cells(cell_list)
 
     # Addition of row names
     if row_names:
-        cell_list = wks.range('%s:A%d' % (first_row, last_idx + 1))
+        cell_list = wks.range('%s%s:%s%d' % (start_col, first_row, start_col, last_idx))
         for idx, cell in enumerate(cell_list):
             cell.value = df.index[idx]
         wks.update_cells(cell_list)
 
     # Addition of cell values
     cell_list = wks.range('%s%s:%s%d' % (
-        first_col[0], first_row[1], last_col, last_idx + 1))
+        first_col, first_row, last_col, last_idx))
     for j, idx in enumerate(df.index):
         for i, col in enumerate(df.columns.values):
             cell_list[i + j * len(df.columns.values)].value = df[col][idx]
