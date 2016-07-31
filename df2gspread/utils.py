@@ -31,23 +31,6 @@ SCOPES = ('https://www.googleapis.com/auth/drive.metadata.readonly '
           'https://docs.google.com/feeds')
 
 
-def run(cmd):
-    cmd = cmd if isinstance(cmd, list) else cmd.split()
-    try:
-        process = subprocess.Popen(
-            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    except Exception as error:
-        logr.error("'{0}' failed: {1}".format(cmd, error))
-        raise
-    output, errors = process.communicate()
-    if process.returncode != 0 or errors:
-        if output:
-            logr.error(output)
-        if errors:
-            logr.error(errors)
-        sys.exit(process.returncode)
-    return output, errors
-
 def get_credentials(credentials=None, client_secret_file=CLIENT_SECRET_FILE, refresh_token=None):
     """Consistently returns valid credentials object.
 

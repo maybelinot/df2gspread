@@ -22,7 +22,7 @@ def test_version_check():
     # THIS NEEDS TO BE UPDATED EVERY TIME THE MAIN PACKAGE
     # VERSION IS UPDATED!!!
     ######################################################
-    _v = '0.1.2'
+    _v = '0.2.0'
 
     if _version.__version__ != _v:
         raise SystemError('SYNC VERSION in tests/test_members.py')
@@ -252,7 +252,6 @@ def test_df2gspread_start_cell(user_credentials_not_available):
     df_upload_0 = pd.DataFrame(
         {0: ['1', '2', 'x', '4']},
         index=[0, 1, 2, 3])
-    df_upload_0 = df_upload_0.fillna('0')
 
     d2g.upload(df_upload_0, filepath, row_names=False, col_names=False, start_cell='A1')
     df_download = g2d.download(filepath)
@@ -388,7 +387,7 @@ def test_df2gspread_df_size(user_credentials_not_available):
     assert_frame_equal(df_upload, df_download)
 
     #Test df_size with start_cell
-    d2g.upload(df_upload_a, filepath, "test4", row_names=False, col_names=False, start_cell='AB10', 
+    d2g.upload(df_upload_a, filepath, "test4", row_names=False, col_names=False, start_cell='AB10',
         df_size = True)
     df_download = g2d.download(filepath, "test4")
     df_upload = df_upload_a
@@ -410,7 +409,7 @@ def test_df2gspread_df_size(user_credentials_not_available):
     assert_frame_equal(df_upload, df_download)
 
     #Test df_size with start_cell and sheet dimensions which need to be expanded
-    d2g.upload(df_upload_a, filepath, "test5", row_names=False, col_names=False, start_cell='AB10', 
+    d2g.upload(df_upload_a, filepath, "test5", row_names=False, col_names=False, start_cell='AB10',
         df_size = True, new_sheet_dimensions = (10,27))
     df_download = g2d.download(filepath, "test5")
     df_upload = df_upload_a
