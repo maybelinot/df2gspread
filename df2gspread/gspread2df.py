@@ -84,8 +84,6 @@ def download(gfile, wks_name=None, col_names=False, row_names=False,
     if not raw_data:
         sys.exit()
 
-    start_col = re.split('(\d+)',start_cell)[0].upper()
-    start_row = re.split('(\d+)',start_cell)[1]
     start_row_int, start_col_int = wks.get_int_addr(start_cell)
 
     rows, cols  = np.shape(raw_data)

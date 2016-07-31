@@ -229,7 +229,7 @@ def test_big_worksheet(user_credentials_not_available):
     delete_file(credentials, file_id)
 
 
-def test_start_cell(user_credentials_not_available):
+def test_df2gspread_start_cell(user_credentials_not_available):
     if user_credentials_not_available:
         pytest.xfail(reason='Credentials')
 
@@ -290,6 +290,19 @@ def test_start_cell(user_credentials_not_available):
     new_rows_array[:] = ''
     df_new_rows = pd.DataFrame(data = new_rows_array)
     df_upload = df_new_rows.append(df_upload, ignore_index=True)
+    assert_frame_equal(df_upload, df_download)
+
+    # Backward compatibility df2gspread => gspread2df
+    d2g.upload(df_upload_0, filepath, row_names=False, col_names=False, start_cell='AB10')
+    df_upload = df_upload_0
+    df_download = g2d.download(filepath, start_cell='AB10')
+    assert_frame_equal(df_upload, df_download)
+
+    d2g.upload(df_upload_0, filepath, start_cell='AB10')
+    df_upload = df_upload_0
+    df_download = g2d.download(filepath, row_names=True, col_names=True, start_cell='AB10')
+    df_download.index = df_download.index.astype(np.int64)
+    df_download.columns = df_download.columns.astype(np.int64)
     assert_frame_equal(df_upload, df_download)
 
     # Clear created file from drive
