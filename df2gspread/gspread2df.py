@@ -9,6 +9,7 @@
 
 import os
 import sys
+import re
 from string import ascii_uppercase
 
 import gspread
@@ -25,8 +26,8 @@ SCOPES = ('https://www.googleapis.com/auth/drive.metadata.readonly '
           'https://docs.google.com/feeds')
 
 
-def download(gfile, wks_name=None, col_names=False,
-             row_names=False, credentials=None):
+def download(gfile, wks_name=None, col_names=False, row_names=False,
+            credentials=None, start_cell = 'A1'):
     """
         Download Google Spreadsheet and convert it to Pandas DataFrame
 
@@ -35,11 +36,13 @@ def download(gfile, wks_name=None, col_names=False,
         :param col_names: assing top row to column names for Pandas DataFrame
         :param row_names: assing left column to row names for Pandas DataFrame
         :param credentials: provide own credentials
+        :param start_cell: specify where to start capturing of the DataFrame; default is A1
         :type gfile: str
         :type wks_name: str
         :type col_names: bool
         :type row_names: bool
         :type credentials: class 'oauth2client.client.OAuth2Credentials'
+        :type start_cell: str
         :returns: Pandas DataFrame
         :rtype: class 'pandas.core.frame.DataFrame'
 
@@ -80,6 +83,21 @@ def download(gfile, wks_name=None, col_names=False,
 
     if not raw_data:
         sys.exit()
+
+    start_row_int, start_col_int = wks.get_int_addr(start_cell)
+
+    rows, cols  = np.shape(raw_data)
+    if start_col_int > cols or (row_names and start_col_int + 1 > cols):
+        raise RuntimeError(
+            "Start col (%s) out of the table columns(%s)" % (start_col_int +
+                                                            row_names, cols))
+
+    if start_row_int > rows or (col_names and start_row_int + 1 > rows):
+        raise RuntimeError(
+            "Start row (%s) out of the table rows(%s)" % (start_row_int +
+                                                            col_names, rows))
+
+    raw_data = [row[start_col_int-1:] for row in raw_data[start_row_int-1:]]
 
     if row_names and col_names:
         row_names = [row[0] for row in raw_data[1:]]
