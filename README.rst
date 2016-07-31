@@ -129,7 +129,7 @@ Run gspread2df like::
 
 Documentation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Documentation is available at http://df2gspread.readthedocs.org/.
+Documentation is available `here <http://df2gspread.readthedocs.org/>`_.
 
 
 Testing
@@ -137,6 +137,11 @@ Testing
 Testing is py.test based. Run with::
 
     py.test tests/ -v
+    
+Or with `coverage <https://pypi.python.org/pypi/coverage>`_::
+
+    coverage run --source df2gspread -m py.test
+    coverage report
 
 
 Development
