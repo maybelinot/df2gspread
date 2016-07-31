@@ -310,6 +310,129 @@ def test_df2gspread_start_cell(user_credentials_not_available):
     file_id = get_file_id(credentials, filepath)
     delete_file(credentials, file_id)
 
+def test_df2gspread_df_size(user_credentials_not_available):
+    if user_credentials_not_available:
+        pytest.xfail(reason='Credentials')
+
+    import string
+    import random
+    import numpy as np
+    import pandas as pd
+    import gspread
+    from pandas.util.testing import assert_frame_equal, assert_equal
+
+    from df2gspread import df2gspread as d2g
+    from df2gspread import gspread2df as g2d
+    from df2gspread.utils import get_credentials
+    from df2gspread.gfiles import get_file_id, delete_file, get_worksheet
+
+    filepath = '/df2gspread_tests/' + ''.join(
+        random.choice(string.ascii_uppercase + string.digits)
+        for _ in range(10))
+    credentials = get_credentials()
+    gc = gspread.authorize(credentials)
+    gfile_id = get_file_id(credentials, filepath, write_access=True)
+
+    df_upload_a = pd.DataFrame(
+        {0: ['1', '2', 'x', '4']},
+        index=[0, 1, 2, 3])
+
+    df_upload_b = pd.DataFrame(data = np.array([np.arange(1500)]*2).T).applymap(str)
+
+    #Uploading a small DF to new sheet to test for sizing down from default
+    d2g.upload(df_upload_a, filepath, "test1", row_names=False, col_names=False, df_size=True)
+    df_download = g2d.download(filepath, "test1")
+    df_upload = df_upload_a
+    wks = get_worksheet(gc, gfile_id, "test1")
+    assert_equal(wks.row_count, len(df_upload))
+    assert_equal(len(df_upload.columns), wks.col_count)
+    assert_equal(len(df_download), len(df_upload))
+    assert_frame_equal(df_upload, df_download)
+
+    #Upload a large DF to existing, smaller sheet to test for proper expansion
+    d2g.upload(df_upload_b, filepath, "test1", row_names=False, col_names=False, df_size=True)
+    df_download = g2d.download(filepath, "test1")
+    df_upload = df_upload_b
+    wks = get_worksheet(gc, gfile_id, "test1")
+    assert_equal(wks.row_count, len(df_upload))
+    assert_equal(len(df_upload.columns), wks.col_count)
+    assert_equal(len(df_download), len(df_upload))
+    assert_frame_equal(df_upload, df_download)
+
+    #Uploading a small DF to existing large sheet to test for sizing down from default
+    d2g.upload(df_upload_a, filepath, "test1", row_names=False, col_names=False, df_size=True)
+    df_download = g2d.download(filepath, "test1")
+    df_upload = df_upload_a
+    wks = get_worksheet(gc, gfile_id, "test1")
+    assert_equal(wks.row_count, len(df_upload))
+    assert_equal(len(df_upload.columns), wks.col_count)
+    assert_equal(len(df_download), len(df_upload))
+    assert_frame_equal(df_upload, df_download)
+
+    #New sheet with col names, make sure 1 extra row and column
+    d2g.upload(df_upload_a, filepath, "test2", row_names=True, col_names=True, df_size=True)
+    df_download = g2d.download(filepath, "test2")
+    df_upload = df_upload_a
+    wks = get_worksheet(gc, gfile_id, "test2")
+    assert_equal(wks.row_count, len(df_upload) + 1)
+    assert_equal(len(df_upload.columns) + 1, wks.col_count)
+    assert_equal(len(df_download), len(df_upload) + 1)
+
+    #Upload to new sheet with specified dimensions
+    d2g.upload(df_upload_a, filepath, "test3", row_names=False, col_names=False, new_sheet_dimensions=(100,10))
+    df_download = g2d.download(filepath, "test3")
+    df_upload = df_upload_a
+    wks = get_worksheet(gc, gfile_id, "test3")
+    assert_equal(wks.row_count, 100)
+    assert_equal(10, wks.col_count)
+    assert_frame_equal(df_upload, df_download)
+
+    #Test df_size with start_cell
+    d2g.upload(df_upload_a, filepath, "test4", row_names=False, col_names=False, start_cell='AB10', 
+        df_size = True)
+    df_download = g2d.download(filepath, "test4")
+    df_upload = df_upload_a
+    new_cols = 27
+    new_cols_array = np.chararray((len(df_upload), new_cols))
+    new_cols_array[:] = ''
+    df_new_cols = pd.DataFrame(data = new_cols_array)
+    df_upload = pd.concat([df_new_cols, df_upload], axis=1)
+    df_upload.columns = range(0, len(df_upload.columns))
+    new_rows = 9
+    new_rows_array = np.chararray((new_rows, len(df_upload.columns)))
+    new_rows_array[:] = ''
+    df_new_rows = pd.DataFrame(data = new_rows_array)
+    df_upload = df_new_rows.append(df_upload, ignore_index=True)
+    wks = get_worksheet(gc, gfile_id, "test4")
+    assert_equal(wks.row_count, len(df_upload))
+    assert_equal(len(df_upload.columns), wks.col_count)
+    assert_equal(len(df_download), len(df_upload))
+    assert_frame_equal(df_upload, df_download)
+
+    #Test df_size with start_cell and sheet dimensions which need to be expanded
+    d2g.upload(df_upload_a, filepath, "test5", row_names=False, col_names=False, start_cell='AB10', 
+        df_size = True, new_sheet_dimensions = (10,27))
+    df_download = g2d.download(filepath, "test5")
+    df_upload = df_upload_a
+    new_cols = 27
+    new_cols_array = np.chararray((len(df_upload), new_cols))
+    new_cols_array[:] = ''
+    df_new_cols = pd.DataFrame(data = new_cols_array)
+    df_upload = pd.concat([df_new_cols, df_upload], axis=1)
+    df_upload.columns = range(0, len(df_upload.columns))
+    new_rows = 9
+    new_rows_array = np.chararray((new_rows, len(df_upload.columns)))
+    new_rows_array[:] = ''
+    df_new_rows = pd.DataFrame(data = new_rows_array)
+    df_upload = df_new_rows.append(df_upload, ignore_index=True)
+    wks = get_worksheet(gc, gfile_id, "test5")
+    assert_equal(wks.row_count, len(df_upload))
+    assert_equal(len(df_upload.columns), wks.col_count)
+    assert_equal(len(df_download), len(df_upload))
+    assert_frame_equal(df_upload, df_download)
+
+    # Clear created file from drive
+    delete_file(credentials, gfile_id)
 
 def test_delete_file(user_credentials_not_available):
     if user_credentials_not_available:
