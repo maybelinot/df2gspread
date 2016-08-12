@@ -32,9 +32,6 @@ Status
    * - Docs
      - .. image:: https://readthedocs.org/projects/df2gspread/badge/
           :target: https://readthedocs.org/projects/df2gspread/
-   * - Downloads
-     - .. image:: https://img.shields.io/pypi/dm/df2gspread.svg
-          :target: https://pypi.python.org/pypi/df2gspread/
    * - License
      - .. image:: https://img.shields.io/pypi/l/df2gspread.svg
           :target: https://pypi.python.org/pypi/df2gspread/
