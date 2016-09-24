@@ -59,6 +59,12 @@ def get_credentials(credentials=None, client_secret_file=CLIENT_SECRET_FILE, ref
             print("Invalid credentials supplied. Will generate from default token.")
 
     token = refresh_token or DEFAULT_TOKEN
+    dir_name = os.path.dirname(DEFAULT_TOKEN)
+    try:
+        os.makedirs(dir_name)
+    except OSError:
+        if not os.path.isdir(dir_name):
+            raise
     store = file.Storage(token)
     credentials = store.get()
 
