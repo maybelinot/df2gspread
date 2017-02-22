@@ -115,11 +115,11 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
     # Otherwise, leave it the same size unless the sheet needs to be expanded
     # to accomodate a larger dataframe.
     if df_size:
-        wks.resize(rows=len(df.index) + row_names, cols=len(df.columns) + col_names)
-    if len(df.index) + row_names + last_idx_adjust > wks.row_count:
-        wks.add_rows(len(df.index) - wks.row_count + row_names + last_idx_adjust)
-    if len(df.columns) + col_names + last_col_adjust  > wks.col_count:
-        wks.add_cols(len(df.columns) - wks.col_count + col_names + last_col_adjust )
+        wks.resize(rows=len(df.index) + col_names, cols=len(df.columns) + row_names)
+    if len(df.index) + col_names + last_idx_adjust > wks.row_count:
+        wks.add_rows(len(df.index) - wks.row_count + col_names + last_idx_adjust)
+    if len(df.columns) + row_names + last_col_adjust  > wks.col_count:
+        wks.add_cols(len(df.columns) - wks.col_count + row_names + last_col_adjust)
 
     # Define first cell for rows and columns
     first_col = re.split('(\d+)',(wks.get_addr_int(1, start_col_int + 1)))[0].upper() if row_names else start_col
