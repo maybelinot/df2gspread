@@ -22,7 +22,7 @@ def test_version_check():
     # THIS NEEDS TO BE UPDATED EVERY TIME THE MAIN PACKAGE
     # VERSION IS UPDATED!!!
     ######################################################
-    _v = '0.2.3'
+    _v = '0.2.4'
 
     if _version.__version__ != _v:
         raise SystemError('SYNC VERSION in tests/test_members.py')
@@ -318,7 +318,7 @@ def test_df2gspread_df_size(user_credentials_not_available):
     import numpy as np
     import pandas as pd
     import gspread
-    from pandas.util.testing import assert_frame_equal, assert_equal
+    from pandas.util.testing import assert_frame_equal
 
     from df2gspread import df2gspread as d2g
     from df2gspread import gspread2df as g2d
@@ -343,9 +343,9 @@ def test_df2gspread_df_size(user_credentials_not_available):
     df_download = g2d.download(filepath, "test1")
     df_upload = df_upload_a
     wks = get_worksheet(gc, gfile_id, "test1")
-    assert_equal(wks.row_count, len(df_upload))
-    assert_equal(len(df_upload.columns), wks.col_count)
-    assert_equal(len(df_download), len(df_upload))
+    assert wks.row_count == len(df_upload)
+    assert len(df_upload.columns) == wks.col_count
+    assert len(df_download) == len(df_upload)
     assert_frame_equal(df_upload, df_download)
 
     #Upload a large DF to existing, smaller sheet to test for proper expansion
@@ -353,9 +353,9 @@ def test_df2gspread_df_size(user_credentials_not_available):
     df_download = g2d.download(filepath, "test1")
     df_upload = df_upload_b
     wks = get_worksheet(gc, gfile_id, "test1")
-    assert_equal(wks.row_count, len(df_upload))
-    assert_equal(len(df_upload.columns), wks.col_count)
-    assert_equal(len(df_download), len(df_upload))
+    assert wks.row_count == len(df_upload)
+    assert len(df_upload.columns) == wks.col_count
+    assert len(df_download) == len(df_upload)
     assert_frame_equal(df_upload, df_download)
 
     #Uploading a small DF to existing large sheet to test for sizing down from default
@@ -363,9 +363,9 @@ def test_df2gspread_df_size(user_credentials_not_available):
     df_download = g2d.download(filepath, "test1")
     df_upload = df_upload_a
     wks = get_worksheet(gc, gfile_id, "test1")
-    assert_equal(wks.row_count, len(df_upload))
-    assert_equal(len(df_upload.columns), wks.col_count)
-    assert_equal(len(df_download), len(df_upload))
+    assert wks.row_count == len(df_upload)
+    assert len(df_upload.columns) == wks.col_count
+    assert len(df_download) == len(df_upload)
     assert_frame_equal(df_upload, df_download)
 
     #New sheet with col names, make sure 1 extra row and column
@@ -373,17 +373,17 @@ def test_df2gspread_df_size(user_credentials_not_available):
     df_download = g2d.download(filepath, "test2")
     df_upload = df_upload_a
     wks = get_worksheet(gc, gfile_id, "test2")
-    assert_equal(wks.row_count, len(df_upload) + 1)
-    assert_equal(len(df_upload.columns) + 1, wks.col_count)
-    assert_equal(len(df_download), len(df_upload) + 1)
+    assert wks.row_count == len(df_upload) + 1
+    assert len(df_upload.columns) + 1 == wks.col_count
+    assert len(df_download) == len(df_upload) + 1
 
     #Upload to new sheet with specified dimensions
     d2g.upload(df_upload_a, filepath, "test3", row_names=False, col_names=False, new_sheet_dimensions=(100,10))
     df_download = g2d.download(filepath, "test3")
     df_upload = df_upload_a
     wks = get_worksheet(gc, gfile_id, "test3")
-    assert_equal(wks.row_count, 100)
-    assert_equal(10, wks.col_count)
+    assert wks.row_count == 100
+    assert 10 == wks.col_count
     assert_frame_equal(df_upload, df_download)
 
     #Test df_size with start_cell
@@ -403,9 +403,9 @@ def test_df2gspread_df_size(user_credentials_not_available):
     df_new_rows = pd.DataFrame(data = new_rows_array)
     df_upload = df_new_rows.append(df_upload, ignore_index=True)
     wks = get_worksheet(gc, gfile_id, "test4")
-    assert_equal(wks.row_count, len(df_upload))
-    assert_equal(len(df_upload.columns), wks.col_count)
-    assert_equal(len(df_download), len(df_upload))
+    assert wks.row_count == len(df_upload)
+    assert len(df_upload.columns) == wks.col_count
+    assert len(df_download) == len(df_upload)
     assert_frame_equal(df_upload, df_download)
 
     #Test df_size with start_cell and sheet dimensions which need to be expanded
@@ -425,9 +425,9 @@ def test_df2gspread_df_size(user_credentials_not_available):
     df_new_rows = pd.DataFrame(data = new_rows_array)
     df_upload = df_new_rows.append(df_upload, ignore_index=True)
     wks = get_worksheet(gc, gfile_id, "test5")
-    assert_equal(wks.row_count, len(df_upload))
-    assert_equal(len(df_upload.columns), wks.col_count)
-    assert_equal(len(df_download), len(df_upload))
+    assert wks.row_count == len(df_upload)
+    assert len(df_upload.columns) == wks.col_count
+    assert len(df_download) == len(df_upload)
     assert_frame_equal(df_upload, df_download)
 
     # Clear created file from drive

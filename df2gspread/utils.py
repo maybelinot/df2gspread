@@ -20,9 +20,9 @@ logging.basicConfig(format='>> %(message)s')
 logr = logging.getLogger('members')
 
 ''' Load the file with credentials '''
-CLIENT_SECRET_FILE = os.path.expanduser('~/.gdrive_private')
+CLIENT_SECRET_FILE = os.path.join( os.path.expanduser("~"), ".gdrive_private")
 
-DEFAULT_TOKEN = os.path.expanduser('~/.oauth/drive.json')
+DEFAULT_TOKEN = os.path.join( os.path.expanduser("~"), ".oauth", "drive.json")
 
 # FIXME: clarify scopes
 SCOPES = ('https://www.googleapis.com/auth/drive.metadata.readonly '
