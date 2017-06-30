@@ -39,7 +39,9 @@ Status
 
 Install
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Example install, using VirtualEnv::
+Example install, using VirtualEnv:
+
+.. code:: bash
 
    # install/use python virtual environment
    virtualenv ~/virtenv_scratch --no-site-packages
@@ -92,7 +94,9 @@ browser and go to `Google console <https://console.developers.google.com>`_ and 
 
 Usage
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Run df2gspread like::
+Run df2gspread like:
+
+.. code:: python
 
     from df2gspread import df2gspread as d2g
     import pandas as pd
@@ -111,7 +115,9 @@ Run df2gspread like::
     # if spreadsheet already exists, all data of provided worksheet(or first as default)
     # will be replaced with data of given DataFrame, make sure that this is what you need!
 
-Run gspread2df like::
+Run gspread2df like:
+
+.. code:: python
 
     from df2gspread import gspread2df as g2d
 
@@ -131,11 +137,15 @@ Documentation is available `here <http://df2gspread.readthedocs.org/>`_.
 
 Testing
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Testing is py.test based. Run with::
+Testing is py.test based. Run with:
+
+.. code:: bash
 
     py.test tests/ -v
     
-Or with `coverage <https://pypi.python.org/pypi/coverage>`_::
+Or with `coverage <https://pypi.python.org/pypi/coverage>`_:
+
+.. code:: bash
 
     coverage run --source df2gspread -m py.test
     coverage report
