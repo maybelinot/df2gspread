@@ -11,8 +11,11 @@ import httplib2
 
 from apiclient import discovery, errors
 import gspread
+import logging
 
 from .utils import logr
+
+logging.getLogger('googleapiclient.discovery').setLevel(logging.CRITICAL)
 
 
 def get_file_id(credentials, gfile, write_access=False):
@@ -20,7 +23,7 @@ def get_file_id(credentials, gfile, write_access=False):
     # auth for apiclient
     http = credentials.authorize(httplib2.Http())
     # FIXME: Different versions have different keys like v1:id, v2:fileId
-    service = discovery.build('drive', 'v2', http=http)
+    service = discovery.build('drive', 'v2', http=http, cache_discovery=False)
     about = service.about().get().execute()
 
     file_id = about['rootFolderId']
@@ -93,7 +96,7 @@ def delete_file(credentials, file_id):
     """DOCS..."""
     try:
         http = credentials.authorize(httplib2.Http())
-        service = discovery.build('drive', 'v2', http=http)
+        service = discovery.build('drive', 'v2', http=http, cache_discovery=False)
         service.files().delete(fileId=file_id).execute()
     except errors.HttpError as e:
         logr.error('Status:', e)
