@@ -11,11 +11,8 @@ import httplib2
 
 from apiclient import discovery, errors
 import gspread
-import logging
 
 from .utils import logr
-
-logging.getLogger('googleapiclient.discovery').setLevel(logging.CRITICAL)
 
 
 def get_file_id(credentials, gfile, write_access=False):
