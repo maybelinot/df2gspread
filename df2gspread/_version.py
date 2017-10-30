@@ -7,5 +7,5 @@
 # @Last Modified time: 2016-03-08 12:36:30
 
 
-version_info = ('0', '2', '4')
+version_info = ('0', '2', '5')
 __version__ = '.'.join(version_info[0:3])  # + '-' + version_info[3]
