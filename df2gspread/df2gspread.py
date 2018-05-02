@@ -11,6 +11,7 @@ from string import ascii_uppercase
 from itertools import islice
 
 import pandas as pd
+import numpy as np
 import gspread
 import re
 
@@ -127,14 +128,18 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
     if col_names:
         cell_list = wks.range('%s%s:%s%s' % (first_col, start_row, last_col, start_row))
         for idx, cell in enumerate(cell_list):
-            cell.value = df.columns.values[idx]
+            o = df.columns.values[idx]
+            cell.value = o if  not isinstance(o, np.integer) else int(o)
+        print(cell_list)
         wks.update_cells(cell_list)
 
     # Addition of row names
     if row_names:
-        cell_list = wks.range('%s%s:%s%d' % (start_col, first_row, start_col, last_idx))
+        cell_list = wks.range('%s%s:%s%d' % (
+            start_col, first_row, start_col, last_idx))
         for idx, cell in enumerate(cell_list):
-            cell.value = df.index[idx]
+            o = df.index[idx]
+            cell.value = o if  not isinstance(o, np.integer) else int(o)
         wks.update_cells(cell_list)
 
     # Addition of cell values
@@ -142,8 +147,9 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
         first_col, first_row, last_col, last_idx))
     for j, idx in enumerate(df.index):
         for i, col in enumerate(df.columns.values):
-            cell_list[i + j * len(df.columns.values)].value = df[col][idx] if not pd.isnull(df[col][idx]) else ''
-    print(cell_list)
+            if not pd.isnull(df[col][idx]):
+                cell_list[i + j * len(df.columns.values)].value = df[col][idx]
+
     for cells in grouper(chunk_size, cell_list):
         wks.update_cells(list(cells))
 

@@ -4,8 +4,7 @@ cache:
 language: python
 python:
   - "2.7"
-  - "3.3"  # ## SEE BELOW FOR EXPLANATION
-  - "3.4"  # ## SEE BELOW FOR EXPLANATION
+  - "3.6"  # ## SEE BELOW FOR EXPLANATION
 install:
   - "pip install -U pip setuptools virtualenv"
   - "pip install coveralls"
@@ -13,7 +12,7 @@ install:
   - "ls ~/travis_wheels/wheelhouse"
   - "pip install -e .[tests,docs,github,invoke] --find-links=file:///home/travis/travis_wheels/wheelhouse --trusted-host None"
 
-script: 
+script:
   - "coverage run --source=df2gspread -m py.test tests"
 after_success:
   - coveralls
