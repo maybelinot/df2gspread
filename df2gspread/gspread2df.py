@@ -63,7 +63,7 @@ def download(gfile, wks_name=None, col_names=False, row_names=False,
 
     try:
         # if gfile is file_id
-        spsh = gc.open_by_key(gfile)
+        gc.open_by_key(gfile).__repr__()
         gfile_id = gfile
     except:
         # else look for file_id in drive
@@ -84,7 +84,7 @@ def download(gfile, wks_name=None, col_names=False, row_names=False,
     if not raw_data:
         sys.exit()
 
-    start_row_int, start_col_int = wks.get_int_addr(start_cell)
+    start_row_int, start_col_int = gspread.utils.a1_to_rowcol(start_cell)
 
     rows, cols  = np.shape(raw_data)
     if start_col_int > cols or (row_names and start_col_int + 1 > cols):
