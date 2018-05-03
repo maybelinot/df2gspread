@@ -7,9 +7,6 @@
 # @Last Modified time: 2016-03-08 12:35:42
 
 
-from string import ascii_uppercase
-from itertools import islice
-
 import pandas as pd
 import numpy as np
 import gspread
@@ -148,20 +145,8 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
             if not pd.isnull(df[col][idx]):
                 cell_list[i + j * len(df.columns.values)].value = df[col][idx]
 
-    for cells in grouper(chunk_size, cell_list):
-        wks.update_cells(list(cells))
-
+    wks.update_cells(cell_list)
     return wks
-
-
-def grouper(n, iterable):
-    it = iter(iterable)
-    while True:
-        chunk = tuple(islice(it, n))
-        if not chunk:
-            return
-        yield chunk
-
 
 def clean_worksheet(wks, gfile_id, wks_name, credentials):
     """DOCS..."""
