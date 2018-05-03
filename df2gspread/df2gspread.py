@@ -89,7 +89,6 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
     # then for new sheets set it to new_sheet_dimensions, which is by default 1000x100
     if df_size:
         new_sheet_dimensions = (len(df), len(df.columns))
-    print(gfile_id)
     wks = get_worksheet(gc, gfile_id, wks_name, write_access=True,
         new_sheet_dimensions=new_sheet_dimensions)
     if clean:
@@ -130,7 +129,6 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
         for idx, cell in enumerate(cell_list):
             o = df.columns.values[idx]
             cell.value = o if  not isinstance(o, np.integer) else int(o)
-        print(cell_list)
         wks.update_cells(cell_list)
 
     # Addition of row names
