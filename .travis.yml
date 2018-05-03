@@ -13,6 +13,6 @@ install:
   - "pip install -e .[tests,docs,github,invoke] --find-links=file:///home/travis/travis_wheels/wheelhouse --trusted-host None"
 
 script:
-  - "coverage run --source=df2gspread -m py.test tests"
+  - "coverage run --source=df2gspread -m py.test tests --assert=plain"
 after_success:
   - coveralls
