@@ -21,7 +21,7 @@ except NameError:  # Python 3
     pass
 
 
-def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
+def upload(df, gfile="/New Spreadsheet", wks_name=None,
            col_names=True, row_names=True, clean=True, credentials=None,
            start_cell = 'A1', df_size = False, new_sheet_dimensions = (1000,100)):
     '''
@@ -31,7 +31,6 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
         :param df: Pandas DataFrame
         :param gfile: path to Google Spreadsheet or gspread ID
         :param wks_name: worksheet name
-        :param chunk_size: size of chunk to upload
         :param col_names: passing top row to column names for Pandas DataFrame
         :param row_names: passing left column to row names for Pandas DataFrame
         :param clean: clean all data in worksheet before uploading
@@ -50,7 +49,6 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
         :type df: class 'pandas.core.frame.DataFrame'
         :type gfile: str
         :type wks_name: str
-        :type chunk_size: int
         :type col_names: bool
         :type row_names: bool
         :type clean: bool
@@ -124,8 +122,7 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
     if col_names:
         cell_list = wks.range('%s%s:%s%s' % (first_col, start_row, last_col, start_row))
         for idx, cell in enumerate(cell_list):
-            o = df.columns.values[idx]
-            cell.value = o if  not isinstance(o, np.integer) else int(o)
+            cell.value = df.columns.astype(str)[idx]
         wks.update_cells(cell_list)
 
     # Addition of row names
@@ -133,10 +130,12 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None, chunk_size=1000,
         cell_list = wks.range('%s%s:%s%d' % (
             start_col, first_row, start_col, last_idx))
         for idx, cell in enumerate(cell_list):
-            o = df.index[idx]
-            cell.value = o if  not isinstance(o, np.integer) else int(o)
+            cell.value = df.index.astype(str)[idx]
         wks.update_cells(cell_list)
 
+
+    # convert df values to string
+    df = df.applymap(str)
     # Addition of cell values
     cell_list = wks.range('%s%s:%s%d' % (
         first_col, first_row, last_col, last_idx))
