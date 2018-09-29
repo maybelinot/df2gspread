@@ -16,7 +16,6 @@ import json
 from oauth2client import file, client, tools
 
 # Load logging before anything else
-logging.basicConfig(format='>> %(message)s')
 logr = logging.getLogger('df2gspread')
 
 ''' Load the file with credentials '''
