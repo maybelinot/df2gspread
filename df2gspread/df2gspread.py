@@ -89,8 +89,8 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None,
     if clean:
         wks = clean_worksheet(wks, gfile_id, wks_name, credentials)
 
-    start_col = re.split('(\d+)',start_cell)[0].upper()
-    start_row = re.split('(\d+)',start_cell)[1]
+    start_col = re.split(r'(\d+)',start_cell)[0].upper()
+    start_row = re.split(r'(\d+)',start_cell)[1]
     start_row_int, start_col_int = gspread.utils.a1_to_rowcol(start_cell)
 
     # find last index and column name (A B ... Z AA AB ... AZ BA)
@@ -101,7 +101,7 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None,
     num_cols = len(df.columns) + 1 if row_names else len(df.columns)
     last_col_adjust = start_col_int - 1
     last_col_int = num_cols + last_col_adjust
-    last_col = re.split('(\d+)',(gspread.utils.rowcol_to_a1(1, last_col_int)))[0].upper()
+    last_col = re.split(r'(\d+)',(gspread.utils.rowcol_to_a1(1, last_col_int)))[0].upper()
 
     # If user requested to resize sheet to fit dataframe, go ahead and
     # resize larger or smaller to better match new size of pandas dataframe.
@@ -115,7 +115,7 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None,
         wks.add_cols(len(df.columns) - wks.col_count + row_names + last_col_adjust)
 
     # Define first cell for rows and columns
-    first_col = re.split('(\d+)',(gspread.utils.rowcol_to_a1(1, start_col_int + 1)))[0].upper() if row_names else start_col
+    first_col = re.split(r'(\d+)',(gspread.utils.rowcol_to_a1(1, start_col_int + 1)))[0].upper() if row_names else start_col
     first_row = str(start_row_int + 1) if col_names else start_row
 
     # Addition of col names

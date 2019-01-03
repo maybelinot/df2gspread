@@ -8,7 +8,7 @@
 
 
 import re
-from  httplib2 import Http
+from httplib2 import Http
 
 from apiclient import discovery, errors
 import gspread
@@ -55,22 +55,21 @@ def get_file_id(credentials, gfile, write_access=False):
             # Why do you ever need to use several folders with the same name?!
             file_id = files[0].get('id')
         elif write_access == True:
-                body = {
-                    'mimeType': 'application/vnd.google-apps.' + ('spreadsheet' if idx == len(pathway)-1 else 'folder'),
-                    'name': name,
-                    'parents': [file_id]
-                }
-                file_id = service.files().create(body=body, fields='id').execute().get('id')
+            body = {
+                'mimeType': 'application/vnd.google-apps.' + ('spreadsheet' if idx == len(pathway)-1 else 'folder'),
+                'name': name,
+                'parents': [file_id]
+            }
+            file_id = service.files().create(body=body, fields='id').execute().get('id')
         else:
             return None
     return file_id
 
 
-def get_worksheet(gc, gfile_id, wks_name, write_access=False, new_sheet_dimensions=(1000,100)):
+def get_worksheet(gc, gfile_id, wks_name, write_access=False, new_sheet_dimensions=(1000, 100)):
     """DOCS..."""
 
     spsh = gc.open_by_key(gfile_id)
-    wkss = spsh.worksheets()
 
     # if worksheet name is not provided , take first worksheet
     if wks_name is None:
@@ -81,7 +80,8 @@ def get_worksheet(gc, gfile_id, wks_name, write_access=False, new_sheet_dimensio
             wks = spsh.worksheet(wks_name)
         except:
             #rows, cols = new_sheet_dimensions
-            wks = spsh.add_worksheet(wks_name, *new_sheet_dimensions) if write_access == True else None
+            wks = spsh.add_worksheet(
+                wks_name, *new_sheet_dimensions) if write_access == True else None
 
     return wks
 
@@ -90,8 +90,9 @@ def delete_file(credentials, file_id):
     """DOCS..."""
     try:
         http = credentials.authorize(Http())
-        service = discovery.build('drive', 'v3', http=http, cache_discovery=False)
+        service = discovery.build(
+            'drive', 'v3', http=http, cache_discovery=False)
         service.files().delete(fileId=file_id).execute()
     except errors.HttpError as e:
-        logr.error('Status:', e)
+        logr.error(e)
         raise
