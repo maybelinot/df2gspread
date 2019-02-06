@@ -82,7 +82,9 @@ def download(gfile, wks_name=None, col_names=False, row_names=False,
     raw_data = wks.get_all_values()
 
     if not raw_data:
-        sys.exit()
+        raise ValueError(
+            'Worksheet is empty or invalid.'
+            )
 
     start_row_int, start_col_int = gspread.utils.a1_to_rowcol(start_cell)
 
