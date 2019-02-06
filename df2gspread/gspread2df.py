@@ -82,7 +82,7 @@ def download(gfile, wks_name=None, col_names=False, row_names=False,
     raw_data = wks.get_all_values()
 
     if not raw_data:
-        raise pd.errors.EmptyDataError(
+        raise ValueError(
             'Worksheet is empty or invalid.'
             )
 
