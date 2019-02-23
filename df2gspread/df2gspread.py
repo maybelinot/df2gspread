@@ -23,7 +23,7 @@ except NameError:  # Python 3
 
 def upload(df, gfile="/New Spreadsheet", wks_name=None,
            col_names=True, row_names=True, clean=True, credentials=None,
-           start_cell = 'A1', df_size = False, new_sheet_dimensions = (1000,100)):
+           start_cell = 'A1', df_size = False, new_sheet_dimensions = (1000,100), value_input_opt='RAW'):
     '''
         Upload given Pandas DataFrame to Google Drive and returns
         gspread Worksheet object
@@ -46,6 +46,7 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None,
             the sheet larger.
             -If False and dataframe is smaller than existing sheet, does not resize.
         :param new_sheet_dimensions: tuple of (row, cols) for size of a new sheet
+        :param value_input_opt: Determines how input data should be interpreted.
         :type df: class 'pandas.core.frame.DataFrame'
         :type gfile: str
         :type wks_name: str
@@ -56,6 +57,7 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None,
         :type start_cell: str
         :type df_size: bool
         :type new_sheet_dimensions: tuple
+        :type value_input_opt: str
         :returns: gspread Worksheet
         :rtype: class 'gspread.models.Worksheet'
 
@@ -123,7 +125,7 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None,
         cell_list = wks.range('%s%s:%s%s' % (first_col, start_row, last_col, start_row))
         for idx, cell in enumerate(cell_list):
             cell.value = df.columns.astype(str)[idx]
-        wks.update_cells(cell_list)
+        wks.update_cells(cell_list, value_input_option=value_input_opt)
 
     # Addition of row names
     if row_names:
@@ -131,7 +133,7 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None,
             start_col, first_row, start_col, last_idx))
         for idx, cell in enumerate(cell_list):
             cell.value = df.index.astype(str)[idx]
-        wks.update_cells(cell_list)
+        wks.update_cells(cell_list, value_input_option=value_input_opt)
 
 
     # convert df values to string
@@ -144,7 +146,7 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None,
             if not pd.isnull(df[col][idx]):
                 cell_list[i + j * len(df.columns.values)].value = df[col][idx]
 
-    wks.update_cells(cell_list)
+    wks.update_cells(cell_list, value_input_option=value_input_opt)
     return wks
 
 def clean_worksheet(wks, gfile_id, wks_name, credentials):
