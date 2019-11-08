@@ -68,6 +68,10 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None,
             >>> wks.title
             'Example worksheet'
     '''
+    # check if dataframe is populated else raise error
+    if len(df) == 0:
+        raise EmptyDataFrameError('DataFrame is empty, nothing will be uploaded to Google Sheets.')
+    
     # access credentials
     credentials = get_credentials(credentials)
     # auth for gspread
