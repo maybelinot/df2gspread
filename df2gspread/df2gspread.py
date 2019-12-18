@@ -27,7 +27,6 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None,
     '''
         Upload given Pandas DataFrame to Google Drive and returns
         gspread Worksheet object
-
         :param df: Pandas DataFrame
         :param gfile: path to Google Spreadsheet or gspread ID
         :param wks_name: worksheet name
@@ -58,9 +57,7 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None,
         :type new_sheet_dimensions: tuple
         :returns: gspread Worksheet
         :rtype: class 'gspread.models.Worksheet'
-
         :Example:
-
             >>> from df2gspread import df2gspread as d2g
             >>> import pandas as pd
             >>> df = pd.DataFrame([1 2 3])
@@ -68,10 +65,6 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None,
             >>> wks.title
             'Example worksheet'
     '''
-    # check if dataframe is populated else raise error
-    if len(df) == 0:
-        raise EmptyDataFrameError('DataFrame is empty, nothing will be uploaded to Google Sheets.')
-    
     # access credentials
     credentials = get_credentials(credentials)
     # auth for gspread
@@ -124,13 +117,14 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None,
 
     # Addition of col names
     if col_names:
-        cell_list = wks.range('%s%s:%s%s' % (first_col, start_row, last_col, start_row))
+        cell_list = wks.range('%s%s:%s%s' % (
+            first_col, start_row, last_col, start_row))
         for idx, cell in enumerate(cell_list):
             cell.value = df.columns.astype(str)[idx]
         wks.update_cells(cell_list)
 
-    # Addition of row names
-    if row_names:
+    # Addition of row names only if DataFrame not empty
+    if row_names and len(df.index) != 0:
         cell_list = wks.range('%s%s:%s%d' % (
             start_col, first_row, start_col, last_idx))
         for idx, cell in enumerate(cell_list):
@@ -140,8 +134,10 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None,
 
     # convert df values to string
     df = df.applymap(str)
+    # Before adding cell values, if DataFrame empty avoid duplicating header
+    last_idx = first_row if last_idx < int(first_row) else last_idx
     # Addition of cell values
-    cell_list = wks.range('%s%s:%s%d' % (
+    cell_list = wks.range('%s%s:%s%s' % (
         first_col, first_row, last_col, last_idx))
     for j, idx in enumerate(df.index):
         for i, col in enumerate(df.columns.values):
@@ -151,9 +147,9 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None,
     wks.update_cells(cell_list)
     return wks
 
+
 def clean_worksheet(wks, gfile_id, wks_name, credentials):
     """DOCS..."""
-
     values = wks.get_all_values()
     if values:
         df_ = pd.DataFrame(index=range(len(values)),
