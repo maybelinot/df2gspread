@@ -23,7 +23,8 @@ except NameError:  # Python 3
 
 def upload(df, gfile="/New Spreadsheet", wks_name=None,
            col_names=True, row_names=True, clean=True, credentials=None,
-           start_cell = 'A1', df_size = False, new_sheet_dimensions = (1000,100)):
+           start_cell = 'A1', df_size = False, new_sheet_dimensions = (1000,100),
+           input_option = 'USER_ENTERED'):
     '''
         Upload given Pandas DataFrame to Google Drive and returns
         gspread Worksheet object
@@ -46,6 +47,8 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None,
             the sheet larger.
             -If False and dataframe is smaller than existing sheet, does not resize.
         :param new_sheet_dimensions: tuple of (row, cols) for size of a new sheet
+        :param input_option: Determines how input data should be interpreted.
+            (see ValueInputOption GoogleSheet API)
         :type df: class 'pandas.core.frame.DataFrame'
         :type gfile: str
         :type wks_name: str
@@ -144,7 +147,7 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None,
             if not pd.isnull(df[col][idx]):
                 cell_list[i + j * len(df.columns.values)].value = df[col][idx]
 
-    wks.update_cells(cell_list)
+    wks.update_cells(cell_list, value_input_option=input_option)
     return wks
 
 def clean_worksheet(wks, gfile_id, wks_name, credentials):
