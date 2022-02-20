@@ -10,7 +10,7 @@
 import re
 from httplib2 import Http
 
-from apiclient import discovery, errors
+from googleapiclient import discovery, errors
 import gspread
 
 from .utils import logr
