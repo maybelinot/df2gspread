@@ -71,10 +71,13 @@ def upload(df, gfile="/New Spreadsheet", wks_name=None,
             >>> wks.title
             'Example worksheet'
     '''
-    # access credentials
-    credentials = get_credentials(credentials)
-    # auth for gspread
-    gc = gspread.authorize(credentials)
+    
+    from google.colab import auth
+    auth.authenticate_user()
+
+    from google.auth import default
+    creds, _ = default()
+    gc = gspread.authorize(creds)
 
     try:
         gc.open_by_key(gfile).__repr__()
