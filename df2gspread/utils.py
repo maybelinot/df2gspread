@@ -26,8 +26,8 @@ DEFAULT_TOKEN = os.path.join( os.path.expanduser("~"), ".oauth", "drive.json")
 # FIXME: clarify scopes
 SCOPES = ('https://www.googleapis.com/auth/drive.metadata.readonly '
           'https://www.googleapis.com/auth/drive '
-          'https://spreadsheets.google.com/feeds '
-          'https://docs.google.com/feeds')
+          'https://www.googleapis.com/auth/spreadsheets '
+          'https://www.googleapis.com/auth/docs')
 
 
 def get_credentials(credentials=None, client_secret_file=CLIENT_SECRET_FILE, refresh_token=None):

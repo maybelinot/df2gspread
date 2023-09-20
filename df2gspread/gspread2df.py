@@ -16,14 +16,8 @@ import gspread
 import pandas as pd
 import numpy as np
 
-from .utils import get_credentials
+from .utils import get_credentials, SCOPES
 from .gfiles import get_file_id, get_worksheet
-
-# FIXME: clarify scopes
-SCOPES = ('https://www.googleapis.com/auth/drive.metadata.readonly '
-          'https://www.googleapis.com/auth/drive '
-          'https://spreadsheets.google.com/feeds '
-          'https://docs.google.com/feeds')
 
 
 def download(gfile, wks_name=None, col_names=False, row_names=False,
